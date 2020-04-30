@@ -243,6 +243,13 @@
 
 ;;; iff parsers
 
+(declaim
+ (ftype (function (stream &optional (integer 0 *))
+         (values chunk (integer 0 *)))
+        leaf
+        node
+        group))
+
 (defun leaf (stream &optional end)
   "Parser for leaf chunk."
   (declare (ignore end))
@@ -258,7 +265,7 @@
                      :data (read-data stream length))
       (+ +size-of-header+ padded-size))))
 
-(defun node (stream end)
+(defun node (stream &optional end)
   "Parser for node chunk."
   (let ((id (read-id stream))) ; node does not have length.
     (values
