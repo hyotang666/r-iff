@@ -6,7 +6,7 @@
   :depends-on
   (
    "nibbles" ; Operators for byte.
-   "babel"
+   "babel" ; Convert string <---> vector.
    )
   :pathname
   "src/"
