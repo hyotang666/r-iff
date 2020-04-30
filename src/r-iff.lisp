@@ -20,7 +20,7 @@
            #:data
            #:src-path
            ;; Slot accessor.
-           #:id<-chunk ; reader
+           #:id<-chunk ; accessor
            #:src-path<-chunk ; reader
            #:data<-chunk ; accessor
            ;;; as DSL.
@@ -202,7 +202,7 @@
   ((id :initarg :id
        :initform (error "ID is required")
        :type id
-       :reader id<-chunk)
+       :accessor id<-chunk)
    (src-path :initarg :src-path
              :type (or string pathname)
              :reader src-path<-chunk)
@@ -211,8 +211,9 @@
 
 (defclass leaf (chunk) ((data :type list)))
 
-(defmethod initialize-instance ((o leaf) &key data)
-  (setf (data<-chunk o) (funcall data)))
+(defmethod initialize-instance ((o leaf) &key id data)
+  (setf (data<-chunk o) (funcall data)
+        (id<-chunk o) id))
 
 (defclass node (chunk) ((data :type list)))
 
@@ -240,7 +241,9 @@
          (length (read-length stream)) ; leaf must have length.
          (padded-size (ensure-even length)))
     (values
-      (make-instance *leaf-class* :id id :data (lambda () (read-data stream length)))
+      (make-instance *leaf-class*
+                     :id id
+                     :data (lambda () (read-data stream length)))
       (+ +size-of-header+ padded-size))))
 
 (defun node (stream &optional end)
