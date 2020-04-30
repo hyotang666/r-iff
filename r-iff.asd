@@ -2,9 +2,12 @@
 (in-package :asdf)
 (defsystem "r-iff"
   :version
-  "0.0.0"
+  "1.0.0"
   :depends-on
-  nil
+  (
+   "nibbles" ; Operators for byte.
+   "babel"
+   )
   :pathname
   "src/"
   :components
