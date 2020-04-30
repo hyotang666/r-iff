@@ -150,12 +150,33 @@
 (defconstant +size-of-id+ 4)
 
 (defconstant +size-of-header+ 8) ; id + length
+
+(defvar *iff-parsers* (make-hash-table :test #'equal))
+
+(defvar *length-reader* #'nibbles:read-sb32/be)
+
+(defvar *length-writer* #'nibbles:write-sb32/be)
+
 ;;;; HELPERS
 
 (defun read-id (stream)
   (let ((it (nibbles:make-octet-vector +size-of-id+)))
     (read-sequence it stream)
     (map 'string #'code-char it)))
+
+(defun parser<-id (thing) (gethash thing *iff-parsers*))
+
+(defun skip (stream num) (file-position stream (+ (file-position stream) num)))
+
+(defun rewind (stream num)
+  (file-position stream (- (file-position stream) num)))
+
+(defun read-length (stream) (funcall *length-reader* stream))
+
+(defun ensure-even (integer)
+  (if (oddp integer)
+      (1+ integer)
+      integer))
 
 ;;; types
 
@@ -206,16 +227,6 @@
   (and (chunkp arg) (slot-boundp arg 'data) (chunkp (data<-chunk arg))))
 
 ;;; iff parsers
-
-(defvar *iff-parsers* (make-hash-table :test #'equal))
-
-(defvar *length-reader*
-  #'nibbles:read-sb32/be
-  "Default value for being used by import-file")
-
-(defvar *length-writer*
-  #'nibbles:write-sb32/be
-  "Default value for being used by export-file")
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (defmacro defparser (name parser)
@@ -286,22 +297,6 @@
                (progn
                 (warn "~S is unknown ID" id)
                 (funcall *default-parser* stream end))))))))
-
-;; helpers
-
-(defun read-length (stream) (funcall *length-reader* stream))
-
-(defun ensure-even (integer)
-  (if (oddp integer)
-      (1+ integer)
-      integer))
-
-(defun parser<-id (thing) (gethash thing *iff-parsers*))
-
-(defun skip (stream num) (file-position stream (+ (file-position stream) num)))
-
-(defun rewind (stream num)
-  (file-position stream (- (file-position stream) num)))
 
 (defparser "FORM" #'group)
 
