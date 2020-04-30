@@ -285,6 +285,16 @@
              (warn "~S is unknown ID" id))
            (funcall parser stream end))))))
 
+(defun compute-length (chunk)
+  "Compute total size of CHUNK, every header length and padding are included."
+  (etypecase chunk
+    (leaf
+     (+ +size-of-header+
+        (ensure-even (reduce #'+ (data<-chunk chunk) :key #'length))))
+    (node
+     (+ +size-of-id+ (reduce #'+ (data<-chunk chunk) :key #'compute-length)))
+    (group (+ +size-of-header+ (compute-length (data<-chunk chunk))))))
+
 (defun write-chunk (chunk stream)
   ;; ID
   (write-sequence (babel:string-to-octets (id<-chunk chunk)) stream)
