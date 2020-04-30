@@ -379,3 +379,13 @@
 (defun write-riff (riff stream)
   (let ((*length-writer* #'nibbles:write-ub32/le))
     (write-chunk riff stream)))
+
+;;;; HELPER
+
+(defun find-by-id (id chunk)
+  (if (equal id (id<-chunk chunk))
+      (ecase (chunk-type chunk)
+        (:group (find-by-id id (data<-chunk chunk)))
+        (:node
+         (find-if (lambda (data) (find-by-id id data)) (data<-chunk chunk)))
+        (:leaf nil))))
