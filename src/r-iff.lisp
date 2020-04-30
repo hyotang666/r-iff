@@ -2,33 +2,31 @@
 
 (defpackage :r-iff
   (:use :cl)
-  (:export ;; chunk class
+  (:export ;;;; MAIN API
+           ;;; IFF
+           #:iff ; import.
+           #:write-iff ; export.
+           ;;; RIFF
+           #:riff ; import.
+           #:write-riff ; export.
+           ;;;; For heavy user.
+           ;;; CHUNK class
            #:chunk
-           ;; chunk predicates
-           #:chunkp
-           #:groupp
-           #:nodep
-           #:leafp
-           ;; chunk slots
+           ;; Slots
            #:id
            #:data
            #:length
            #:src-path
-           ;; chunk accessors
+           ;; Readers
            #:id<-chunk
            #:length<-chunk
            #:src-path<-chunk
            #:data<-chunk
-           ;; iff class and its accessors.
-           #:iff
-           #:id<-iff
-           #:length<-iff
-           #:data<-iff
-           ;; riff class and its accessors.
-           #:riff
-           #:id<-riff
-           #:length<-riff
-           #:data<-riff
+           ;; Predicates
+           #:chunkp
+           #:groupp
+           #:nodep
+           #:leafp
            ;; as DSL.
            #:defparser
            #:leaf
@@ -36,18 +34,14 @@
            #:group
            #:*length-reader*
            #:*length-writer*
-           ;; magic numbers
+           ;; Magic numbers
            #:+size-of-id+
            #:+size-of-header+
-           ;; useful API
+           ;; Useful helpers
            #:make-chunk
            #:make-chunks
-           #:write-iff
            #:write-chunk
-           #:write-chunks
-           #:compute-chunk-length
-           #:retrieve
-           ;; utilities
+           ;; Utilities
            #:ensure-even))
 
 (in-package :r-iff)
