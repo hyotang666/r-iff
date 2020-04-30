@@ -147,9 +147,9 @@
 
 (defvar *iff-parsers* (make-hash-table :test #'equal))
 
-(defvar *length-reader* #'nibbles:read-sb32/be)
+(defvar *length-reader* #'nibbles:read-ub32/be)
 
-(defvar *length-writer* #'nibbles:write-sb32/be)
+(defvar *length-writer* #'nibbles:write-ub32/be)
 
 (defvar *default-parser* 'leaf)
 
