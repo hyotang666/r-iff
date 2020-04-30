@@ -381,6 +381,7 @@
 
 (defun find-by-id (id chunk)
   (if (equal id (id<-chunk chunk))
+      chunk
       (etypecase chunk
         (group (find-by-id id (data<-chunk chunk)))
         (node
