@@ -228,7 +228,7 @@
     (skip stream padded-size)
     (values
       (make-instance 'chunk
-                     :id (string<-id id)
+                     :id id
                      :length length
                      :src-path (truename (pathname stream))
                      :data current-position)
@@ -239,7 +239,7 @@
   (let ((id (read-id stream))) ; node does not have length.
     (values
       (make-instance 'chunk
-                     :id (string<-id id)
+                     :id id
                      :data (make-chunks stream (- end +size-of-id+)))
       end)))
 
@@ -250,7 +250,7 @@
                                                              ; length.
     (values
       (make-instance 'chunk
-                     :id (string<-id id)
+                     :id id
                      :length length
                      :data (make-chunk stream length))
       (+ +size-of-header+ length))))
@@ -270,14 +270,14 @@
   "Top level."
   (let* ((id (read-id stream)))
     (if (eql end 4) ; as id-only-p
-        (values (make-instance 'chunk :id (string<-id id)) 4)
+        (values (make-instance 'chunk :id id) 4)
         (progn
          (rewind stream +size-of-id+)
          (let ((parser (parser<-id id)))
            (if parser
                (funcall parser stream end)
                (progn
-                (warn "~S is unknown ID" (string<-id id))
+                (warn "~S is unknown ID" id)
                 (funcall *default-parser* stream end))))))))
 
 ;; helpers
@@ -292,11 +292,9 @@
 (defun read-id (stream)
   (let ((it (nibbles:make-octet-vector +size-of-id+)))
     (read-sequence it stream)
-    it))
+    (map 'string #'code-char it)))
 
-(defun string<-id (id-vector) (map 'string #'code-char id-vector))
-
-(defun parser<-id (id-vector) (gethash (string<-id id-vector) *iff-parsers*))
+(defun parser<-id (thing) (gethash thing *iff-parsers*))
 
 (defun skip (stream num) (file-position stream (+ (file-position stream) num)))
 
@@ -349,13 +347,13 @@
   FILE may iff or riff."
   (with-open-file(s path :element-type 'Octet)
     (let((id(read-id s)))
-      (if(toplevel-id-p file(string<-id id))
+      (if(toplevel-id-p file id)
 	(progn (rewind s +size-of-id+)
 	       (setf(Data<-file file)(make-chunk s))
 	       file)
 	(error "Invalid ~A file : ~S"
 	       (type-of file)
-	       (string<-id id))))))
+	       id)))))
 
 (defun toplevel-id-p(type arg)
   "Evaluated to T when arg is toplevel id."
