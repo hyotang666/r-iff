@@ -157,6 +157,8 @@
 
 (defvar *length-writer* #'nibbles:write-sb32/be)
 
+(defvar *default-parser* 'leaf)
+
 ;;;; HELPERS
 
 (defun read-id (stream)
@@ -281,8 +283,6 @@
       (if (zerop counter)
           (values (nreverse (push chunk acc)) end)
           (make-chunks stream counter (push chunk acc))))))
-
-(defvar *default-parser* #'leaf)
 
 (defun make-chunk (stream &optional end)
   "Top level."
