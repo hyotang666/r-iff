@@ -177,7 +177,7 @@
 (defun read-data (stream size)
   (loop :for chunk
              := (make-array (list (min *data-size-limit* size))
-                            :element-type '(signed-byte 8))
+                            :element-type '(unsigned-byte 8))
         :do (read-sequence chunk stream)
         :collect chunk
         :if (<= size *data-size-limit*)
