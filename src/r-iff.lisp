@@ -228,17 +228,11 @@
 
 ;;; print object
 
-(defun chunk-type (chunk)
-  (cond ((groupp chunk) :group)
-        ((nodep chunk) :node)
-        ((leafp chunk) :leaf)
-        (t (error "Unknown type ~S" chunk))))
-
 (defmethod print-object ((chunk chunk) stream)
   (print-unreadable-object (chunk stream)
-    (let ((type (chunk-type chunk)))
+    (let ((type (type-of chunk)))
       (format stream "~A ~A~@[ : ~A~]" type (id<-chunk chunk)
-              (when (eq :leaf type)
+              (when (eq leaf type)
                 (data<-chunk chunk))))))
 
 ;;; iff parsers
@@ -314,13 +308,13 @@
   (when (slot-boundp chunk 'length)
     (funcall *length-writer* (length<-chunk chunk) stream))
   ;; CONTENT
-  (ecase (chunk-type chunk)
-    (:leaf
+  (etypecase chunk
+    (leaf
      (dolist (vector (data<-chunk chunk)) (write-sequence vector stream))
      (when (oddp (length<-chunk chunk)) ; pad-needed-p
        (write-byte 0 stream)))
-    (:node (dolist (chunk (data<-chunk chunk)) (write-chunk chunk stream)))
-    (:group
+    (node (dolist (chunk (data<-chunk chunk)) (write-chunk chunk stream)))
+    (group
      (if (= 4 (length<-chunk chunk))
          (write-sequence
            (babel:string-to-octets (id<-chunk (data<-chunk chunk))) stream)
@@ -390,8 +384,8 @@
 
 (defun find-by-id (id chunk)
   (if (equal id (id<-chunk chunk))
-      (ecase (chunk-type chunk)
-        (:group (find-by-id id (data<-chunk chunk)))
-        (:node
+      (etypecase chunk
+        (group (find-by-id id (data<-chunk chunk)))
+        (node
          (find-if (lambda (data) (find-by-id id data)) (data<-chunk chunk)))
-        (:leaf nil))))
+        (leaf nil))))
