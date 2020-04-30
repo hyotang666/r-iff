@@ -210,6 +210,12 @@
          :documentation "Gourp contains node. Node contains leaves. Leaf never contains chunk."))
   (:documentation "Basic type of group, node, and leaf."))
 
+(defclass leaf (chunk) ())
+
+(defclass node (chunk) ())
+
+(defclass group (chunk) ())
+
 ;;; predicates
 
 (defun chunkp (arg) "Evaluated to T when ARG is chunk." (typep arg 'chunk))
