@@ -146,6 +146,17 @@
 
 ;;;; implementation
 ;;;; SPECIALS
+
+(defconstant +size-of-id+ 4)
+
+(defconstant +size-of-header+ 8) ; id + length
+;;;; HELPERS
+
+(defun read-id (stream)
+  (let ((it (nibbles:make-octet-vector +size-of-id+)))
+    (read-sequence it stream)
+    (map 'string #'code-char it)))
+
 ;;; types
 
 (deftype id () '(vector standard-char 4))
@@ -213,10 +224,6 @@
     PARSER is function. Its lambda-list must be (stream &optional end)."
     (check-type name string)
     `(progn (setf (gethash ,name *iff-parsers*) ,parser) ,name)))
-
-(defconstant +size-of-id+ 4)
-
-(defconstant +size-of-header+ 8) ; id + length
 
 (defun leaf (stream &optional end)
   "Parser for leaf chunk."
@@ -288,11 +295,6 @@
   (if (oddp integer)
       (1+ integer)
       integer))
-
-(defun read-id (stream)
-  (let ((it (nibbles:make-octet-vector +size-of-id+)))
-    (read-sequence it stream)
-    (map 'string #'code-char it)))
 
 (defun parser<-id (thing) (gethash thing *iff-parsers*))
 
