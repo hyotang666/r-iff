@@ -155,6 +155,8 @@
 
 (defparameter *data-size-limit* array-total-size-limit)
 
+(defparameter *read-data-element-type* '(unsigned-byte 8))
+
 ;;;; HELPERS
 
 (defun read-id (stream)
@@ -177,7 +179,7 @@
 (defun read-data (stream size)
   (loop :for chunk
              := (make-array (list (min *data-size-limit* size))
-                            :element-type '(unsigned-byte 8))
+                            :element-type *read-data-element-type*)
         :do (read-sequence chunk stream)
         :collect chunk
         :if (<= size *data-size-limit*)
@@ -200,11 +202,14 @@
              :reader src-path<-chunk
              :documentation "Only leaf has.")
    (data :initarg :data
-         :reader data<-chunk
+         :accessor data<-chunk
          :documentation "Gourp contains node. Node contains leaves. Leaf never contains chunk."))
   (:documentation "Basic type of group, node, and leaf."))
 
 (defclass leaf (chunk) ())
+
+(defmethod initialize-instance ((o leaf) &key data)
+  (setf (data<-chunk o) (funcall data)))
 
 (defclass node (chunk) ())
 
@@ -232,9 +237,7 @@
          (length (read-length stream)) ; leaf must have length.
          (padded-size (ensure-even length)))
     (values
-      (make-instance 'leaf
-                     :id id
-                     :data (read-data stream length))
+      (make-instance 'leaf :id id :data (lambda () (read-data stream length)))
       (+ +size-of-header+ padded-size))))
 
 (defun node (stream &optional end)
