@@ -216,16 +216,6 @@
 
 (defclass group (chunk) ())
 
-;;; predicates
-
-(defun chunkp (arg) "Evaluated to T when ARG is chunk." (typep arg 'chunk))
-
-(defun nodep (arg) "Evaluated to T when ARG is node." (typep arg 'node))
-
-(defun leafp (arg) "Evaluated to T when ARG is leaf." (typep arg 'leaf))
-
-(defun groupp (arg) "Evaluated to T when ARG is group." (typep arg 'group))
-
 ;;; print object
 
 (defmethod print-object ((chunk chunk) stream)
