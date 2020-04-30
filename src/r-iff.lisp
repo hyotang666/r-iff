@@ -182,7 +182,7 @@
 
 ;;; types
 
-(deftype id () '(vector standard-char 4))
+(deftype id () '(vector character 4))
 
 (defclass chunk ()
   ((id :initarg :id
@@ -229,14 +229,6 @@
   (and (chunkp arg) (slot-boundp arg 'data) (chunkp (data<-chunk arg))))
 
 ;;; iff parsers
-
-(eval-when (:compile-toplevel :load-toplevel :execute)
-  (defmacro defparser (name parser)
-    "[syntax]defparser name parser
-    NAME is r/iff's tag, must be string.
-    PARSER is function. Its lambda-list must be (stream &optional end)."
-    (check-type name string)
-    `(progn (setf (gethash ,name *iff-parsers*) ,parser) ,name)))
 
 (defun leaf (stream &optional end)
   "Parser for leaf chunk."
@@ -297,6 +289,22 @@
                (progn
                 (warn "~S is unknown ID" id)
                 (funcall *default-parser* stream end))))))))
+
+;;;; DEFPARSER
+#| SYNTAX
+ | (defparser name parser)
+ |
+ | name := (vector character 4)
+ |
+ | parser := (function (stream &optional end) (values chunk end))
+ | end := (integer 0 *)
+ |#
+
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (defmacro defparser (name parser)
+    ;; Trivial syntax check.
+    (check-type name id)
+    `(progn (setf (gethash ,name *iff-parsers*) ,parser) ,name)))
 
 (defparser "FORM" #'group)
 
