@@ -214,10 +214,7 @@
 
 (defmethod print-object ((chunk chunk) stream)
   (print-unreadable-object (chunk stream)
-    (let ((type (type-of chunk)))
-      (format stream "~A ~A~@[ : ~A~]" type (id<-chunk chunk)
-              (when (eq 'leaf type)
-                (data<-chunk chunk))))))
+    (format stream "~A ~S" (type-of chunk) (id<-chunk chunk))))
 
 ;;; iff parsers
 
