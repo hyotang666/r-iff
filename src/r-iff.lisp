@@ -257,7 +257,7 @@
          (length (read-length stream)) ; leaf must have length.
          (padded-size (ensure-even length)))
     (values
-      (make-instance 'chunk
+      (make-instance 'leaf
                      :id id
                      :length length
                      :src-path (truename (pathname stream))
@@ -268,7 +268,7 @@
   "Parser for node chunk."
   (let ((id (read-id stream))) ; node does not have length.
     (values
-      (make-instance 'chunk
+      (make-instance 'node
                      :id id
                      :data (make-chunks stream (- end +size-of-id+)))
       end)))
@@ -279,7 +279,7 @@
   (let ((id (read-id stream)) (length (read-length stream))) ; group must have
                                                              ; length.
     (values
-      (make-instance 'chunk
+      (make-instance 'group
                      :id id
                      :length length
                      :data (make-chunk stream length))
