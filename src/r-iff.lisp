@@ -256,7 +256,6 @@
   (let* ((id (read-id stream))
          (length (read-length stream)) ; leaf must have length.
          (padded-size (ensure-even length)))
-    (skip stream padded-size)
     (values
       (make-instance 'chunk
                      :id id
