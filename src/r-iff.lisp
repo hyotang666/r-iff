@@ -159,6 +159,8 @@
 
 (defvar *default-parser* 'leaf)
 
+(defparameter *data-size-limit* array-total-size-limit)
+
 ;;;; HELPERS
 
 (defun read-id (stream)
@@ -179,6 +181,17 @@
   (if (oddp integer)
       (1+ integer)
       integer))
+
+(defun read-data (stream size)
+  (loop :for chunk
+             := (make-array (list (min *data-size-limit* size))
+                            :element-type '(signed-byte 8))
+        :do (read-sequence chunk stream)
+        :collect chunk
+        :if (<= size *data-size-limit*)
+          :do (loop-finish)
+        :else
+          :do (decf size *data-size-limit*)))
 
 ;;; types
 
@@ -241,7 +254,6 @@
   (declare (ignore end))
   (let* ((id (read-id stream))
          (length (read-length stream)) ; leaf must have length.
-         (current-position (file-position stream))
          (padded-size (ensure-even length)))
     (skip stream padded-size)
     (values
@@ -249,7 +261,7 @@
                      :id id
                      :length length
                      :src-path (truename (pathname stream))
-                     :data current-position)
+                     :data (read-data stream length))
       (+ +size-of-header+ padded-size))))
 
 (defun node (stream end)
