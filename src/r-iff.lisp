@@ -166,7 +166,7 @@
     (read-sequence it stream)
     (map 'string #'code-char it)))
 
-(defun parser<-id (thing) (gethash thing *iff-parsers*))
+(defun parser<-id (thing) (gethash thing *iff-parsers* *default-parser*))
 
 (defun skip (stream num) (file-position stream (+ (file-position stream) num)))
 
@@ -283,12 +283,11 @@
         (values (make-instance 'chunk :id id) 4)
         (progn
          (rewind stream +size-of-id+)
-         (let ((parser (parser<-id id)))
-           (if parser
-               (funcall parser stream end)
-               (progn
-                (warn "~S is unknown ID" id)
-                (funcall *default-parser* stream end))))))))
+         (multiple-value-bind (parser found?)
+             (parser<-id id)
+           (unless found?
+             (warn "~S is unknown ID" id))
+           (funcall parser stream end))))))
 
 ;;;; DEFPARSER
 #| SYNTAX
