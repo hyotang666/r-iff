@@ -195,10 +195,6 @@
        :type id
        :reader id<-chunk
        :documentation "Required")
-   (length :initarg :length
-           :type (signed-byte 32)
-           :reader length<-chunk
-           :documentation "Only leaf or group has.")
    (src-path :initarg :src-path
              :type (or string pathname)
              :reader src-path<-chunk
