@@ -195,25 +195,21 @@
   ((id :initarg :id
        :initform (error "ID is required")
        :type id
-       :reader id<-chunk
-       :documentation "Required")
+       :reader id<-chunk)
    (src-path :initarg :src-path
              :type (or string pathname)
-             :reader src-path<-chunk
-             :documentation "Only leaf has.")
-   (data :initarg :data
-         :accessor data<-chunk
-         :documentation "Gourp contains node. Node contains leaves. Leaf never contains chunk."))
-  (:documentation "Basic type of group, node, and leaf."))
+             :reader src-path<-chunk)
+   (data :initarg :data :accessor data<-chunk))
+  (:documentation "Abstract superclass of group, node, and leaf."))
 
-(defclass leaf (chunk) ())
+(defclass leaf (chunk) ((data :type list)))
 
 (defmethod initialize-instance ((o leaf) &key data)
   (setf (data<-chunk o) (funcall data)))
 
-(defclass node (chunk) ())
+(defclass node (chunk) ((data :type list)))
 
-(defclass group (chunk) ())
+(defclass group (chunk) ((data :type node)))
 
 ;;; print object
 

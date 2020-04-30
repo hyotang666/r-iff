@@ -2,7 +2,7 @@
 (in-package :asdf)
 (defsystem "r-iff"
   :version
-  "2.10.1"
+  "2.10.2"
   :depends-on
   (
    "nibbles" ; Operators for byte.
