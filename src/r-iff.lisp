@@ -310,15 +310,14 @@
   ;; CONTENT
   (etypecase chunk
     (leaf
-     (dolist (vector (data<-chunk chunk)) (write-sequence vector stream))
-     (when (oddp (length<-chunk chunk)) ; pad-needed-p
-       (write-byte 0 stream)))
+     (let ((length 0))
+       (dolist (vector (data<-chunk chunk))
+         (incf length (length vector))
+         (write-sequence vector stream))
+       (when (oddp length) ; pad-needed-p
+         (write-byte 0 stream))))
     (node (dolist (chunk (data<-chunk chunk)) (write-chunk chunk stream)))
-    (group
-     (if (= 4 (length<-chunk chunk))
-         (write-sequence
-           (babel:string-to-octets (id<-chunk (data<-chunk chunk))) stream)
-         (write-chunk (data<-chunk chunk) stream))))
+    (group (write-chunk (data<-chunk chunk) stream)))
   ;; RETURN-VALUE
   chunk)
 
