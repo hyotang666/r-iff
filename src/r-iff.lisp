@@ -12,35 +12,36 @@
            ;;;; For heavy user.
            ;;; CHUNK class
            #:chunk
-           ;; Slots
-           #:id
-           #:data
-           #:length
-           #:src-path
-           ;; Readers
-           #:id<-chunk
-           #:length<-chunk
-           #:src-path<-chunk
-           #:data<-chunk
-           ;; Predicates
-           #:chunkp
-           #:groupp
-           #:nodep
-           #:leafp
-           ;; as DSL.
-           #:defparser
            #:leaf
            #:node
            #:group
-           #:*length-reader*
-           #:*length-writer*
+           ;; Slots
+           #:id
+           #:data
+           #:src-path
+           ;; Slot accessor.
+           #:id<-chunk ; reader
+           #:src-path<-chunk ; reader
+           #:data<-chunk ; accessor
+           ;;; as DSL.
+           #:defparser
+           ;; Constructors.
+           ;; #:leaf
+           ;; #:node
+           ;; #:group
+           ;;;; Special variable to control behavior.
+           #:*read-data-element-type*
+           #:*leaf-class*
+           #:*node-class*
+           #:*group-class*
            ;; Magic numbers
            #:+size-of-id+
            #:+size-of-header+
-           ;; Useful helpers
+           ;; Helpers
            #:make-chunk
            #:make-chunks
            #:write-chunk
+           #:find-by-id
            ;; Utilities
            #:ensure-even))
 
