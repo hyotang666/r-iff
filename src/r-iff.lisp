@@ -157,6 +157,12 @@
 
 (defparameter *read-data-element-type* '(unsigned-byte 8))
 
+(defparameter *leaf-class* 'leaf)
+
+(defparameter *node-class* 'node)
+
+(defparameter *group-class* 'group)
+
 ;;;; HELPERS
 
 (defun read-id (stream)
@@ -233,14 +239,14 @@
          (length (read-length stream)) ; leaf must have length.
          (padded-size (ensure-even length)))
     (values
-      (make-instance 'leaf :id id :data (lambda () (read-data stream length)))
+      (make-instance *leaf-class* :id id :data (lambda () (read-data stream length)))
       (+ +size-of-header+ padded-size))))
 
 (defun node (stream &optional end)
   "Parser for node chunk."
   (let ((id (read-id stream))) ; node does not have length.
     (values
-      (make-instance 'node
+      (make-instance *node-class*
                      :id id
                      :data (make-chunks stream (- end +size-of-id+)))
       end)))
@@ -251,7 +257,7 @@
   (let ((id (read-id stream)) (length (read-length stream))) ; group must have
                                                              ; length.
     (values
-      (make-instance 'group
+      (make-instance *group-class*
                      :id id
                      :src-path (truename stream)
                      :data (make-chunk stream length))
