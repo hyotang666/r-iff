@@ -307,6 +307,27 @@
              (warn "~S is unknown ID" id))
            (funcall parser stream end))))))
 
+(defun write-chunk (chunk stream)
+  ;; ID
+  (write-sequence (babel:string-to-octets (id<-chunk chunk)) stream)
+  ;; LENGTH
+  (when (slot-boundp chunk 'length)
+    (funcall *length-writer* (length<-chunk chunk) stream))
+  ;; CONTENT
+  (ecase (chunk-type chunk)
+    (:leaf
+     (dolist (vector (data<-chunk chunk)) (write-sequence vector stream))
+     (when (oddp (length<-chunk chunk)) ; pad-needed-p
+       (write-byte 0 stream)))
+    (:node (dolist (chunk (data<-chunk chunk)) (write-chunk chunk stream)))
+    (:group
+     (if (= 4 (length<-chunk chunk))
+         (write-sequence
+           (babel:string-to-octets (id<-chunk (data<-chunk chunk))) stream)
+         (write-chunk (data<-chunk chunk) stream))))
+  ;; RETURN-VALUE
+  chunk)
+
 ;;;; DEFPARSER
 #| SYNTAX
  | (defparser name parser)
@@ -335,89 +356,38 @@
 
 (defparser "JJJJ" #'node)
 
+;;;; IFF
+;;; IMPORT
+
+(defun iff (pathname)
+  (with-open-file (stream pathname :element-type 'nibbles:octet)
+    (let ((id (read-id stream)))
+      (assert (find id '("FORM" "LIST" "CAT ") :test #'equal))
+      (rewind stream +size-of-id+)
+      (make-chunk stream))))
+
+;;; EXPORT
+
+(defun write-iff (iff stream)
+  (write-chunk iff stream))
+
+;;;; RIFF
+;;; IMPORT
+
+(defun riff (pathname)
+  (with-open-file (stream pathname :element-type 'nibbles:octet)
+    (let* ((*length-reader* #'nibbles:read-ub32/le) (id (read-id stream)))
+      (assert (find id '("RIFF" "LIST") :test #'equal))
+      (rewind stream +size-of-id+)
+      (make-chunk stream))))
+
+;;; EXPORT
+
+(defun write-riff (riff stream)
+  (let ((*length-writer* #'nibbles:write-ub32/le))
+    (write-chunk riff stream)))
+
 #|
-;;; iff file types
-(defclass iff(file)
-  ((data :initarg :data :type chunk
-	 :accessor data<-iff :accessor Data<-file)))
-(defclass riff(iff)
-  ((data :initarg :data :type chunk
-	 :accessor data<-riff :accessor Data<-file
-	 :accessor data<-iff)))
-
-(define-file-type"iff":iff)
-(define-file-type"riff" :riff)
-
-;;; import
-(defmethod %Import-file((type(eql :iff))path)
-  "Interface for usability."
-  (%Import-file(make-instance 'iff)path)) ; as diverging.
-
-(defmethod %Import-file((type(eql :riff))path)
-  "Interface for usability."
-  (let((*length-reader* #'Read-ub32/le)) ; as prepare.
-    (%Import-file (make-instance 'riff) path))) ; as diverging.
-
-(defmethod %Import-file((file iff)path)
-  "Actual implementation.
-  FILE may iff or riff."
-  (with-open-file(s path :element-type 'Octet)
-    (let((id(read-id s)))
-      (if(toplevel-id-p file id)
-	(progn (rewind s +size-of-id+)
-	       (setf(Data<-file file)(make-chunk s))
-	       file)
-	(error "Invalid ~A file : ~S"
-	       (type-of file)
-	       id)))))
-
-(defun toplevel-id-p(type arg)
-  "Evaluated to T when arg is toplevel id."
-  (and(typep arg 'id)
-    (typecase type
-      (riff
-       (find arg #(riff list) :test #'string=))
-      (iff
-       (find arg #(form list |CAT |) :test #'string=)))))
-
-;;; export
-(defmethod Export-file((iff iff)path)
-  (with-open-file(dest path :direction :output 
-		      :if-exists :supersede
-		      :if-does-not-exist :create 
-		      :element-type 'octet)
-    (write-iff iff dest)))
-
-(defmethod Export-file((riff riff)path)
-  (declare(ignore path))
-  (let((*length-writer* #'Write-ub32/le))
-    (call-next-method)))
-
-(defun write-iff(iff dest)
-  "write r/iff data to DEST stream."
-  (write-chunk(data<-iff iff)dest))
-
-(defun write-chunk(chunk dest)
-  (with-slots(id length data src-path)chunk
-    (write-sequence(String-to-octets id)dest)
-    (ecase(chunk-type chunk)
-      (:leaf (funcall *length-writer* length dest)
-	     (with-open-file(src src-path :element-type 'Octet)
-	       (file-position src data)
-	       (loop repeat length
-		     do (write-byte(read-byte src)dest)))
-	     (when(oddp length) ; pad-needed-p
-	       (write-byte 0 dest)))
-      (:node (write-chunks data dest))
-      (:group (funcall *length-writer* length dest)
-	      (if(= 4 length)
-		(write-sequence(String-to-octets(id<-chunk data))dest)
-		(write-chunk data dest))))))
-
-(defun write-chunks(chunks dest)
-  (dolist(chunk chunks)
-    (write-chunk chunk dest)))
-
 (defun retrieve(target iff)
   "Retrieve TARGET id chunk from IFF."
   (labels((REC(chunk)
