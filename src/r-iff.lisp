@@ -295,12 +295,18 @@
      (+ +size-of-id+ (reduce #'+ (data<-chunk chunk) :key #'compute-length)))
     (group (+ +size-of-header+ (compute-length (data<-chunk chunk))))))
 
+(defun write-length (chunk stream)
+  (etypecase chunk
+    ((or leaf group)
+     (funcall *length-writer* (- (compute-length chunk) +size-of-header+)
+              stream))
+    (node #|Do nothing|#)))
+
 (defun write-chunk (chunk stream)
   ;; ID
   (write-sequence (babel:string-to-octets (id<-chunk chunk)) stream)
   ;; LENGTH
-  (when (slot-boundp chunk 'length)
-    (funcall *length-writer* (length<-chunk chunk) stream))
+  (write-length chunk stream)
   ;; CONTENT
   (etypecase chunk
     (leaf
