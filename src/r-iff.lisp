@@ -203,15 +203,6 @@
          :documentation "Gourp contains node. Node contains leaves. Leaf never contains chunk."))
   (:documentation "Basic type of group, node, and leaf."))
 
-;;; print object
-
-(defmethod print-object ((chunk chunk) stream)
-  (print-unreadable-object (chunk stream)
-    (let ((type (chunk-type chunk)))
-      (format stream "~A ~A~@[ : ~A~]" type (id<-chunk chunk)
-              (when (eq :leaf type)
-                (data<-chunk chunk))))))
-
 ;;; predicates
 
 (defun chunkp (arg) "Evaluated to T when ARG is chunk." (typep arg 'chunk))
@@ -227,6 +218,21 @@
 (defun groupp (arg)
   "Evaluated to T when ARG is group."
   (and (chunkp arg) (slot-boundp arg 'data) (chunkp (data<-chunk arg))))
+
+;;; print object
+
+(defun chunk-type (chunk)
+  (cond ((groupp chunk) :group)
+        ((nodep chunk) :node)
+        ((leafp chunk) :leaf)
+        (t (error "Unknown type ~S" chunk))))
+
+(defmethod print-object ((chunk chunk) stream)
+  (print-unreadable-object (chunk stream)
+    (let ((type (chunk-type chunk)))
+      (format stream "~A ~A~@[ : ~A~]" type (id<-chunk chunk)
+              (when (eq :leaf type)
+                (data<-chunk chunk))))))
 
 ;;; iff parsers
 
@@ -316,12 +322,6 @@
 (defparser "RIFF" #'group)
 
 (defparser "JJJJ" #'node)
-
-(defun chunk-type (chunk)
-  (cond ((groupp chunk) :group)
-        ((nodep chunk) :node)
-        ((leafp chunk) :leaf)
-        (t (error "Unknown type ~S" chunk))))
 
 #|
 ;;; iff file types
