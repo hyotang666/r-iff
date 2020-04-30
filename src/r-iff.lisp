@@ -234,7 +234,6 @@
     (values
       (make-instance 'leaf
                      :id id
-                     :src-path (truename (pathname stream))
                      :data (read-data stream length))
       (+ +size-of-header+ padded-size))))
 
@@ -255,6 +254,7 @@
     (values
       (make-instance 'group
                      :id id
+                     :src-path (truename stream)
                      :data (make-chunk stream length))
       (+ +size-of-header+ length))))
 
