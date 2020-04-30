@@ -216,7 +216,7 @@
   (print-unreadable-object (chunk stream)
     (let ((type (type-of chunk)))
       (format stream "~A ~A~@[ : ~A~]" type (id<-chunk chunk)
-              (when (eq leaf type)
+              (when (eq 'leaf type)
                 (data<-chunk chunk))))))
 
 ;;; iff parsers
