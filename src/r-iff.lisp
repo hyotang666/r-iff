@@ -164,8 +164,6 @@
 
 (defun parser<-id (thing) (gethash thing *iff-parsers* *default-parser*))
 
-(defun skip (stream num) (file-position stream (+ (file-position stream) num)))
-
 (defun rewind (stream num)
   (file-position stream (- (file-position stream) num)))
 
