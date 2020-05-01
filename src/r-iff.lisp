@@ -168,7 +168,8 @@
 
 (defun read-id (stream)
   (let ((it (nibbles:make-octet-vector +size-of-id+)))
-    (read-sequence it stream)
+    (assert (= (read-sequence it stream) +size-of-id+) ()
+      'end-of-file :stream stream)
     (map 'string #'code-char it)))
 
 (defun parser<-id (thing) (gethash thing *iff-parsers* *default-parser*))
