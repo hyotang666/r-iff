@@ -662,15 +662,33 @@
 
 ;;;; Arguments and Values:
 
-; stream := 
+; stream := Input stream otherwise signals condition.
+#?(read-length "Not stream") :signals condition
 
-; result := 
+; result := (unsigned-byte 32)
+#?(byvest:with-input-from-byte-vector (in #(1 2 3 4))
+    (read-length in))
+=> #B00000001000000100000001100000100
 
 ;;;; Affected By:
+; `r-iff::*LENGTH-READER*`
+#?(let((r-iff::*length-reader* 'nibbles:read-ub32/le))
+    (byvest:with-input-from-byte-vector (in #(1 2 3 4))
+      (read-length in)))
+=> #B00000100000000110000001000000001
 
 ;;;; Side-Effects:
+; Consume stream.
+
+#?(byvest:with-input-from-byte-vector (in #(1 2 3 4 5))
+    (list (read-length in) (read-byte in)))
+=> (#B00000001000000100000001100000100 5)
+,:test equal
 
 ;;;; Notes:
 
 ;;;; Exceptional-Situations:
-
+; When stream has less than 4 bytes, end-of-file is signaled.
+#?(byvest:with-input-from-byte-vector (in #(1 2 3))
+    (read-length in))
+:signals end-of-file
