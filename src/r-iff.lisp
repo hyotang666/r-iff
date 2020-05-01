@@ -229,7 +229,7 @@
 
 (declaim
  (ftype (function (stream &optional (integer 0 *))
-         (values chunk (integer 0 *)))
+         (values chunk (integer 0 *) &optional))
         leaf
         node
         group))
