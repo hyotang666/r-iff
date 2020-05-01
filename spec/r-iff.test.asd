@@ -2,9 +2,13 @@
 (in-package :asdf)
 (defsystem "r-iff.test"
   :version
-  "0.2.0"
+  "0.2.1"
   :depends-on
-  (:jingoh "r-iff")
+  (
+   :jingoh
+    "r-iff"
+    "byvest" ; Byte vector stream.
+    )
   :components
   ((:file "r-iff"))
   :perform

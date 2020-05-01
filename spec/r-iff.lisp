@@ -1,6 +1,6 @@
 (defpackage :r-iff.spec
   (:use :cl :jingoh :r-iff)
-  (:import-from :r-iff #:read-data))
+  (:import-from :r-iff #:read-data #:read-id))
 (in-package :r-iff.spec)
 (setup :r-iff)
 
@@ -625,15 +625,30 @@
 
 ;;;; Arguments and Values:
 
-; stream := 
+; stream := input stream otherwise error.
+#?(read-id "Not stream") :signals condition
 
-; result := 
+; result := id
+#?(byvest:with-input-from-byte-vector (in (babel:string-to-octets "test"))
+    (read-id in))
+=> "test"
+,:test equal
 
 ;;;; Affected By:
 
 ;;;; Side-Effects:
+; Consume stream.
 
 ;;;; Notes:
 
 ;;;; Exceptional-Situations:
+; If stream has less than 4 bytes, end-of-file is signaled.
+#?(byvest:with-input-from-byte-vector (in (babel:string-to-octets "les"))
+    (read-id in))
+:signals end-of-file
 
+#?(byvest:with-input-from-byte-vector (in (babel:string-to-octets "12345"))
+    (list (read-id in)
+          (code-char (read-byte in))))
+=> ("1234" #\5)
+,:test equal
