@@ -615,3 +615,25 @@
       (read-data s 3)))
 => ("tes")
 ,:test equalp
+
+(requirements-about READ-ID :doc-type function)
+
+;;;; Description:
+
+#+syntax
+(READ-ID stream) ; => result
+
+;;;; Arguments and Values:
+
+; stream := 
+
+; result := 
+
+;;;; Affected By:
+
+;;;; Side-Effects:
+
+;;;; Notes:
+
+;;;; Exceptional-Situations:
+
