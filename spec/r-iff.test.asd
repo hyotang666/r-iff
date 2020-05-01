@@ -2,7 +2,7 @@
 (in-package :asdf)
 (defsystem "r-iff.test"
   :version
-  "0.0.0"
+  "0.1.0"
   :depends-on
   (:jingoh "r-iff")
   :components

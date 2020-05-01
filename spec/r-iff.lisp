@@ -1,5 +1,6 @@
 (defpackage :r-iff.spec
-  (:use :cl :jingoh :r-iff))
+  (:use :cl :jingoh :r-iff)
+  (:import-from :r-iff #:read-data))
 (in-package :r-iff.spec)
 (setup :r-iff)
 
@@ -558,6 +559,29 @@
 ;;;; Arguments and Values:
 
 ; integer := 
+
+; result := 
+
+;;;; Affected By:
+
+;;;; Side-Effects:
+
+;;;; Notes:
+
+;;;; Exceptional-Situations:
+
+(requirements-about READ-DATA :doc-type function)
+
+;;;; Description:
+
+#+syntax
+(READ-DATA stream size) ; => result
+
+;;;; Arguments and Values:
+
+; stream := 
+
+; size := 
 
 ; result := 
 
