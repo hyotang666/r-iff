@@ -184,10 +184,12 @@
       integer))
 
 (defun read-data (stream size)
-  (loop :for chunk
-             := (make-array (list (min *data-size-limit* size))
+  (loop :for length := (min *data-size-limit* size)
+        :for chunk
+             := (make-array (list length)
                             :element-type *read-data-element-type*)
-        :do (read-sequence chunk stream)
+        :do (assert (= length (read-sequence chunk stream)) ()
+              'end-of-file :stream stream)
         :collect chunk
         :if (<= size *data-size-limit*)
           :do (loop-finish)
