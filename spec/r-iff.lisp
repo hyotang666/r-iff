@@ -141,21 +141,81 @@
 
 ;;;; Arguments and Values:
 
-; stream := stream
+; stream := stream otherwise signals condition.
+#?(leaf "Not stream") :signals condition
 
-; end := unsigned-byte
+; end := unsigned-byte, Ignored.
 
 ; result 1 := chunk
+#?(byvest:with-input-from-byte-vector (in (concatenate 'vector
+                                                       (babel:string-to-octets "test")
+                                                       #(0 0 0 0)))
+    (leaf in))
+:be-the chunk
 
-; result 2 := unsigned-byte
+#?(byvest:with-input-from-byte-vector (in (concatenate 'vector
+                                                       (babel:string-to-octets "test")
+                                                       #(0 0 0 2 3 4)))
+    (leaf in))
+:multiple-value-satisfies
+(lambda (chunk length)
+  (& (typep chunk 'chunk)
+     (equal "test" (id<-chunk chunk))
+     (= 10 (r-iff::compute-length chunk))
+     (equalp '(#(3 4)) (data<-chunk chunk))
+     (= 10 length)))
+
+; result 2 := unsigned-byte, total size of leaf.
+#?(byvest:with-input-from-byte-vector (in (concatenate 'vector
+                                                       (babel:string-to-octets "test")
+                                                       #(0 0 0 0)))
+    (nth-value 1 (leaf in)))
+=> 8
 
 ;;;; Affected By:
+; `*LEAF-CLASS*`
+
+; `R-IFF::*DATA-SIZE-LIMIT*`
+#?(byvest:with-input-from-byte-vector (in (concatenate 'vector
+                                                       (babel:string-to-octets "test")
+                                                       #(0 0 0 2 3 4)))
+    (let ((r-iff::*data-size-limit* 1))
+      (leaf in)))
+:multiple-value-satisfies
+(lambda (chunk length)
+  (& (typep chunk 'chunk)
+     (equal "test" (id<-chunk chunk))
+     (= 10 (r-iff::compute-length chunk))
+     (equalp '(#(3) #(4)) (data<-chunk chunk))
+     (= 10 length)))
 
 ;;;; Side-Effects:
+; Consume stream.
+#?(byvest:with-input-from-byte-vector (in (concatenate 'vector
+                                                       (babel:string-to-octets "test")
+                                                       #(0 0 0 0 1)))
+    (values (leaf in) (read-byte in)))
+:multiple-value-satisfies
+(lambda (chunk byte)
+  (& (typep chunk 'chunk)
+     (= 1 byte)))
 
 ;;;; Notes:
 
 ;;;; Exceptional-Situations:
+; When stream has less than 8 byte, end-of-file is signaled.
+#?(byvest:with-input-from-byte-vector (in (concatenate 'vector
+                                                       (babel:string-to-octets "test")
+                                                       #(0 0 0)))
+    (leaf in))
+:signals end-of-file
+
+; When stream does not have specified length of bytes, end-of-file is signaled.
+#?(byvest:with-input-from-byte-vector (in (concatenate 'vector
+                                                       (babel:string-to-octets "test")
+                                                       #(0 0 0 1)))
+    (leaf in))
+:signals end-of-file
 
 (requirements-about NODE :doc-type TYPE)
 
