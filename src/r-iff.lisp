@@ -211,9 +211,9 @@
 
 (defclass leaf (chunk) ((data :type list)))
 
-(defmethod initialize-instance ((o leaf) &key id data)
-  (setf (data<-chunk o) (funcall data)
-        (id<-chunk o) id))
+(defmethod initialize-instance :after
+           ((o leaf) &key stream size &allow-other-keys)
+  (setf (data<-chunk o) (read-data stream size)))
 
 (defclass node (chunk) ((data :type list)))
 
@@ -243,7 +243,9 @@
     (values
       (make-instance *leaf-class*
                      :id id
-                     :data (lambda () (read-data stream length)))
+                     :position (file-position stream)
+                     :stream stream
+                     :size length)
       (+ +size-of-header+ padded-size))))
 
 (defun node (stream &optional end)
