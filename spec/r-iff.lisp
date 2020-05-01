@@ -1,6 +1,6 @@
 (defpackage :r-iff.spec
   (:use :cl :jingoh :r-iff)
-  (:import-from :r-iff #:read-data #:read-id))
+  (:import-from :r-iff #:read-data #:read-id #:read-length))
 (in-package :r-iff.spec)
 (setup :r-iff)
 
@@ -652,3 +652,25 @@
           (code-char (read-byte in))))
 => ("1234" #\5)
 ,:test equal
+
+(requirements-about READ-LENGTH :doc-type function)
+
+;;;; Description:
+
+#+syntax
+(READ-LENGTH stream) ; => result
+
+;;;; Arguments and Values:
+
+; stream := 
+
+; result := 
+
+;;;; Affected By:
+
+;;;; Side-Effects:
+
+;;;; Notes:
+
+;;;; Exceptional-Situations:
+
