@@ -579,17 +579,39 @@
 
 ;;;; Arguments and Values:
 
-; stream := 
+; stream := input-stream, otherwise condition.
+#?(read-data "Not stream" 0) :signals condition
 
-; size := 
+; size := (integer 0 *), otherwise condition
+#?(read-data *standard-input* "Not integer") :signals condition
+#?(read-data *standard-input* -1) :signals condition
 
-; result := 
+; result := (list vector)
 
 ;;;; Affected By:
+; `*READ-DATA-ELEMENT-TYPE*`
 
 ;;;; Side-Effects:
+; Consume stream.
 
 ;;;; Notes:
 
 ;;;; Exceptional-Situations:
+; When size over stream, end-of-file is signaled.
+#?(with-input-from-string (s "test")
+    (let ((*read-data-element-type* 'character))
+      (read-data s 5)))
+:signals end-of-file
 
+;;;; Examples:
+#?(with-input-from-string (s "test")
+    (let ((*read-data-element-type* 'character))
+      (read-data s 4)))
+=> ("test")
+,:test equalp
+
+#?(with-input-from-string (s "test")
+    (let ((*read-data-element-type* 'character))
+      (read-data s 3)))
+=> ("tes")
+,:test equalp
