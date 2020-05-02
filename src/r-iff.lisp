@@ -220,7 +220,7 @@
 
 (defclass node (chunk) ((data :type list)))
 
-(defclass group (chunk) ((data :type node)))
+(defclass group (chunk) ((data :type (or null node))))
 
 ;;; print object
 
@@ -270,7 +270,8 @@
                      :id id
                      :src-path (when (typep stream 'file-stream)
                                  (truename stream))
-                     :data (make-chunk stream length))
+                     :data (unless (zerop length)
+                             (make-chunk stream length)))
       (+ +size-of-header+ length))))
 
 (defun make-chunks (stream end &optional acc)
