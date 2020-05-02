@@ -253,6 +253,7 @@
 
 (defun node (stream &optional end)
   "Parser for node chunk."
+  (check-type end (unsigned-byte 32))
   (let ((id (read-id stream))) ; node does not have length.
     (values
       (make-instance *node-class*
