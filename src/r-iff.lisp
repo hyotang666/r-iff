@@ -298,6 +298,7 @@
 (defun compute-length (chunk)
   "Compute total size of CHUNK, every header length and padding are included."
   (etypecase chunk
+    (null 0)
     (leaf
      (+ +size-of-header+
         (ensure-even (reduce #'+ (data<-chunk chunk) :key #'length))))
