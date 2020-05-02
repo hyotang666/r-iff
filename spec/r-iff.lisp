@@ -633,6 +633,27 @@
 => #(116 101 115 116 0 0 0 2 3 4)
 ,:test equalp
 
+#?(flex:with-output-to-sequence (out)
+    (flex:with-input-from-sequence (in (babel:string-to-octets "test"))
+      (write-chunk (node in 4) out)))
+=> #(116 101 115 116)
+,:test equalp
+
+#?(flex:with-output-to-sequence (out)
+    (flex:with-input-from-sequence (in (concatenate 'vector
+                                                    (babel:string-to-octets "node")
+                                                    (babel:string-to-octets "leaf")
+                                                    #(0 0 0 2) ; <--- Specify body is 2 bytes.
+                                                    #(3 4) ; <--- Body.
+                                                    #(5))) ; <--- Never included.
+      (write-chunk (node in 14) out)))
+=> #(110 111 100 101
+     108 101 97 102
+     0 0 0 2
+     3 4)
+,:test equalp
+,:ignore-signals warning
+
 (requirements-about FIND-BY-ID :doc-type function)
 
 ;;;; Description:
