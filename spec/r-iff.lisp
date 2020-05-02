@@ -679,6 +679,14 @@
 ,:test equalp
 ,:ignore-signals warning
 
+#?(flex:with-output-to-sequence (out)
+    (flex:with-input-from-sequence (in (concatenate 'vector
+                                                    (babel:string-to-octets "test")
+                                                    #(0 0 0 0)))
+      (write-chunk (group in) out)))
+=> #(116 101 115 116 0 0 0 0)
+,:test equalp
+
 (requirements-about FIND-BY-ID :doc-type function)
 
 ;;;; Description:
