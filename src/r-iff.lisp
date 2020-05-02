@@ -231,8 +231,8 @@
 ;;; iff parsers
 
 (declaim
- (ftype (function (stream &optional (integer 0 *))
-         (values chunk (integer 0 *) &optional))
+ (ftype (function (stream &optional (integer 4 #xFFFFFFFF))
+         (values chunk (integer 4 #xFFFFFFFF) &optional))
         leaf
         node
         group))
@@ -253,7 +253,6 @@
 
 (defun node (stream &optional end)
   "Parser for node chunk."
-  (check-type end (unsigned-byte 32))
   (let ((id (read-id stream))) ; node does not have length.
     (values
       (make-instance *node-class*
