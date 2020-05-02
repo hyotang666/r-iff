@@ -307,9 +307,10 @@
     (null 0)
     (leaf
      (+ +size-of-header+
-        (ensure-even (reduce #'+ (data<-chunk chunk) :key #'length))))
+        (reduce #'+ (data<-chunk chunk) :key #'length)))
     (node
-     (+ +size-of-id+ (reduce #'+ (data<-chunk chunk) :key #'compute-length)))
+     (+ +size-of-id+ (reduce #'+ (data<-chunk chunk) :key (lambda (elt)
+                                                            (ensure-even (compute-length elt))))))
     (group (+ +size-of-header+ (compute-length (data<-chunk chunk))))))
 
 (defun write-length (chunk stream)
