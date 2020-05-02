@@ -572,19 +572,41 @@
 
 ;;;; Arguments and Values:
 
-; chunk := 
+; chunk := chunk otherwise condition.
+#?(write-chunk "Not chunk" *standard-output*) :signals condition
 
-; stream := 
+; stream := stream, otherwise condition.
+#?(write-chunk (make-instance 'node :id "dumy") "Not stream") :signals condition
 
-; result := 
+; result := CHUNK
 
 ;;;; Affected By:
 
 ;;;; Side-Effects:
+; Outputs to stream.
 
 ;;;; Notes:
 
 ;;;; Exceptional-Situations:
+
+;;;; Examples:
+#?(byvest:with-output-to-byte-vector (out)
+    (byvest:with-input-from-byte-vector (in (concatenate 'vector
+                                                         (babel:string-to-octets "test")
+                                                         #(0 0 0 0)))
+      (write-chunk (leaf in) out)))
+=> #(116 101 115 116 0 0 0 0)
+,:test equalp
+
+#?(byvest:with-output-to-byte-vector (out)
+    (byvest:with-input-from-byte-vector (in (concatenate 'vector
+                                                         (babel:string-to-octets "test")
+                                                         #(0 0 0 2) ; <-- Specify body is 2 bytes.
+                                                         #(3 4) ; <-- Body.
+                                                         #(5))) ; <-- Never included.
+      (write-chunk (leaf in) out)))
+=> #(116 101 115 116 0 0 0 2 3 4)
+,:test equalp
 
 (requirements-about FIND-BY-ID :doc-type function)
 
