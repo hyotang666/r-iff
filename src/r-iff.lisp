@@ -263,8 +263,9 @@
 (defun group (stream &optional end)
   "Parser for group chunk"
   (declare (ignore end))
-  (let ((id (read-id stream)) (length (read-length stream))) ; group must have
-                                                             ; length.
+  (let ((id (read-id stream))
+        (length (read-length stream)) ; group must have length.
+        )
     (values
       (make-instance *group-class*
                      :id id
