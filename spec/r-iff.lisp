@@ -675,6 +675,18 @@
 => #(116 101 115 116 0 0 0 2 3 4)
 ,:test equalp
 
+; When leaf body has odd length size, padding are written.
+#?(flex:with-output-to-sequence (out)
+    (flex:with-input-from-sequence (in (concatenate 'vector
+                                                    (babel:string-to-octets "test")
+                                                    #(0 0 0 1) ; <--- Specify size.
+                                                    #(2) ; <--- The body.
+                                                    #(3) ; <--- Padding.
+                                                    #(4))) ; <--- Never included.
+      (write-chunk (leaf in) out)))
+=> #(116 101 115 116 0 0 0 1 2 0)
+,:test equalp
+
 #?(flex:with-output-to-sequence (out)
     (flex:with-input-from-sequence (in (babel:string-to-octets "test"))
       (write-chunk (node in 4) out)))
