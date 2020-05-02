@@ -328,7 +328,10 @@
        (when (oddp length) ; pad-needed-p
          (write-byte 0 stream))))
     (node (dolist (chunk (data<-chunk chunk)) (write-chunk chunk stream)))
-    (group (write-chunk (data<-chunk chunk) stream)))
+    (group
+     (let ((data (data<-chunk chunk)))
+       (when data
+         (write-chunk data stream)))))
   ;; RETURN-VALUE
   chunk)
 
