@@ -217,6 +217,23 @@
     (leaf in))
 :signals end-of-file
 
+;;;; ADDITIONAL TEST:
+; When size is odd, one more byte (padd) is consumed.
+#?(flex:with-input-from-sequence (in (concatenate 'vector
+                                                  (babel:string-to-octets "test")
+                                                  #(0 0 0 1) ; <--- Specify body size.
+                                                  #(2) ; <--- The body.
+                                                  #(3) ; <--- Padding.
+                                                  #(4))) ; <--- As sentinel.
+    (values (leaf in) (read-byte in)))
+:multiple-value-satisfies
+(lambda (leaf byte)
+  (& (typep leaf 'leaf)
+     (equal "test" (id<-chunk leaf))
+     (= 10 (r-iff::compute-length leaf))
+     (equalp '(#(2)) (data<-chunk leaf))
+     (eql 4 byte)))
+
 (requirements-about NODE :doc-type TYPE)
 
 ;;;; Description:
