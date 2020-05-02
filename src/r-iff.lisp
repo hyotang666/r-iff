@@ -214,9 +214,14 @@
 
 (defclass leaf (chunk) ((data :type list)))
 
-(defmethod initialize-instance :after
-           ((o leaf) &key stream size &allow-other-keys)
-  (setf (data<-chunk o) (read-data stream size)))
+(defmethod initialize-instance ((o leaf) &key id stream size &allow-other-keys)
+  (with-slots ((chunk-id id) (chunk-data data))
+      o
+    (setf chunk-id id
+          chunk-data (read-data stream size)))
+  (when (oddp size)
+    (read-byte stream)) ; Consume padd.
+  o)
 
 (defclass node (chunk) ((data :type list)))
 
