@@ -230,7 +230,7 @@
 (lambda (leaf byte)
   (& (typep leaf 'leaf)
      (equal "test" (id<-chunk leaf))
-     (= 10 (r-iff::compute-length leaf))
+     (= 9 (r-iff::compute-length leaf))
      (equalp '(#(2)) (data<-chunk leaf))
      (eql 4 byte)))
 
