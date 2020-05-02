@@ -147,15 +147,15 @@
 ; end := unsigned-byte, Ignored.
 
 ; result 1 := chunk
-#?(byvest:with-input-from-byte-vector (in (concatenate 'vector
-                                                       (babel:string-to-octets "test")
-                                                       #(0 0 0 0)))
+#?(flex:with-input-from-sequence (in (concatenate 'vector
+                                                  (babel:string-to-octets "test")
+                                                  #(0 0 0 0)))
     (leaf in))
 :be-the chunk
 
-#?(byvest:with-input-from-byte-vector (in (concatenate 'vector
-                                                       (babel:string-to-octets "test")
-                                                       #(0 0 0 2 3 4)))
+#?(flex:with-input-from-sequence (in (concatenate 'vector
+                                                  (babel:string-to-octets "test")
+                                                  #(0 0 0 2 3 4)))
     (leaf in))
 :multiple-value-satisfies
 (lambda (chunk length)
@@ -166,9 +166,9 @@
      (= 10 length)))
 
 ; result 2 := unsigned-byte, total size of leaf.
-#?(byvest:with-input-from-byte-vector (in (concatenate 'vector
-                                                       (babel:string-to-octets "test")
-                                                       #(0 0 0 0)))
+#?(flex:with-input-from-sequence (in (concatenate 'vector
+                                                  (babel:string-to-octets "test")
+                                                  #(0 0 0 0)))
     (nth-value 1 (leaf in)))
 => 8
 
@@ -176,9 +176,9 @@
 ; `*LEAF-CLASS*`
 
 ; `R-IFF::*DATA-SIZE-LIMIT*`
-#?(byvest:with-input-from-byte-vector (in (concatenate 'vector
-                                                       (babel:string-to-octets "test")
-                                                       #(0 0 0 2 3 4)))
+#?(flex:with-input-from-sequence (in (concatenate 'vector
+                                                  (babel:string-to-octets "test")
+                                                  #(0 0 0 2 3 4)))
     (let ((r-iff::*data-size-limit* 1))
       (leaf in)))
 :multiple-value-satisfies
@@ -191,9 +191,9 @@
 
 ;;;; Side-Effects:
 ; Consume stream.
-#?(byvest:with-input-from-byte-vector (in (concatenate 'vector
-                                                       (babel:string-to-octets "test")
-                                                       #(0 0 0 0 1)))
+#?(flex:with-input-from-sequence (in (concatenate 'vector
+                                                  (babel:string-to-octets "test")
+                                                  #(0 0 0 0 1)))
     (values (leaf in) (read-byte in)))
 :multiple-value-satisfies
 (lambda (chunk byte)
@@ -204,16 +204,16 @@
 
 ;;;; Exceptional-Situations:
 ; When stream has less than 8 byte, end-of-file is signaled.
-#?(byvest:with-input-from-byte-vector (in (concatenate 'vector
-                                                       (babel:string-to-octets "test")
-                                                       #(0 0 0)))
+#?(flex:with-input-from-sequence (in (concatenate 'vector
+                                                  (babel:string-to-octets "test")
+                                                  #(0 0 0)))
     (leaf in))
 :signals end-of-file
 
 ; When stream does not have specified length of bytes, end-of-file is signaled.
-#?(byvest:with-input-from-byte-vector (in (concatenate 'vector
-                                                       (babel:string-to-octets "test")
-                                                       #(0 0 0 1)))
+#?(flex:with-input-from-sequence (in (concatenate 'vector
+                                                  (babel:string-to-octets "test")
+                                                  #(0 0 0 1)))
     (leaf in))
 :signals end-of-file
 
@@ -590,20 +590,20 @@
 ;;;; Exceptional-Situations:
 
 ;;;; Examples:
-#?(byvest:with-output-to-byte-vector (out)
-    (byvest:with-input-from-byte-vector (in (concatenate 'vector
-                                                         (babel:string-to-octets "test")
-                                                         #(0 0 0 0)))
+#?(flex:with-output-to-sequence (out)
+    (flex:with-input-from-sequence (in (concatenate 'vector
+                                                    (babel:string-to-octets "test")
+                                                    #(0 0 0 0)))
       (write-chunk (leaf in) out)))
 => #(116 101 115 116 0 0 0 0)
 ,:test equalp
 
-#?(byvest:with-output-to-byte-vector (out)
-    (byvest:with-input-from-byte-vector (in (concatenate 'vector
-                                                         (babel:string-to-octets "test")
-                                                         #(0 0 0 2) ; <-- Specify body is 2 bytes.
-                                                         #(3 4) ; <-- Body.
-                                                         #(5))) ; <-- Never included.
+#?(flex:with-output-to-sequence (out)
+    (flex:with-input-from-sequence (in (concatenate 'vector
+                                                    (babel:string-to-octets "test")
+                                                    #(0 0 0 2) ; <-- Specify body is 2 bytes.
+                                                    #(3 4) ; <-- Body.
+                                                    #(5))) ; <-- Never included.
       (write-chunk (leaf in) out)))
 => #(116 101 115 116 0 0 0 2 3 4)
 ,:test equalp
@@ -711,7 +711,7 @@
 #?(read-id "Not stream") :signals condition
 
 ; result := id
-#?(byvest:with-input-from-byte-vector (in (babel:string-to-octets "test"))
+#?(flex:with-input-from-sequence (in (babel:string-to-octets "test"))
     (read-id in))
 => "test"
 ,:test equal
@@ -725,11 +725,11 @@
 
 ;;;; Exceptional-Situations:
 ; If stream has less than 4 bytes, end-of-file is signaled.
-#?(byvest:with-input-from-byte-vector (in (babel:string-to-octets "les"))
+#?(flex:with-input-from-sequence (in (babel:string-to-octets "les"))
     (read-id in))
 :signals end-of-file
 
-#?(byvest:with-input-from-byte-vector (in (babel:string-to-octets "12345"))
+#?(flex:with-input-from-sequence (in (babel:string-to-octets "12345"))
     (list (read-id in)
           (code-char (read-byte in))))
 => ("1234" #\5)
@@ -748,21 +748,21 @@
 #?(read-length "Not stream") :signals condition
 
 ; result := (unsigned-byte 32)
-#?(byvest:with-input-from-byte-vector (in #(1 2 3 4))
+#?(flex:with-input-from-sequence (in #(1 2 3 4))
     (read-length in))
 => #B00000001000000100000001100000100
 
 ;;;; Affected By:
 ; `r-iff::*LENGTH-READER*`
 #?(let((r-iff::*length-reader* 'nibbles:read-ub32/le))
-    (byvest:with-input-from-byte-vector (in #(1 2 3 4))
+    (flex:with-input-from-sequence (in #(1 2 3 4))
       (read-length in)))
 => #B00000100000000110000001000000001
 
 ;;;; Side-Effects:
 ; Consume stream.
 
-#?(byvest:with-input-from-byte-vector (in #(1 2 3 4 5))
+#?(flex:with-input-from-sequence (in #(1 2 3 4 5))
     (list (read-length in) (read-byte in)))
 => (#B00000001000000100000001100000100 5)
 ,:test equal
@@ -771,6 +771,6 @@
 
 ;;;; Exceptional-Situations:
 ; When stream has less than 4 bytes, end-of-file is signaled.
-#?(byvest:with-input-from-byte-vector (in #(1 2 3))
+#?(flex:with-input-from-sequence (in #(1 2 3))
     (read-length in))
 :signals end-of-file
