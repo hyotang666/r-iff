@@ -274,12 +274,11 @@
 
 (defun make-chunks (stream end &optional acc)
   "make-chunk recursively."
-  (multiple-value-bind (chunk count)
-      (make-chunk stream end)
-    (let ((counter (- end count)))
-      (if (zerop counter)
-          (values (nreverse (push chunk acc)) end)
-          (make-chunks stream counter (push chunk acc))))))
+  (if (zerop end)
+      (nreverse acc)
+      (multiple-value-bind (chunk count)
+          (make-chunk stream end)
+        (make-chunks stream (- end count) (cons chunk acc)))))
 
 (defun make-chunk (stream &optional end)
   "Top level."
