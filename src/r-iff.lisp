@@ -207,7 +207,7 @@
        :type id
        :accessor id<-chunk)
    (src-path :initarg :src-path
-             :type (or string pathname)
+             :type (or string pathname null)
              :reader src-path<-chunk)
    (data :initarg :data :accessor data<-chunk))
   (:documentation "Abstract superclass of group, node, and leaf."))
@@ -268,7 +268,8 @@
     (values
       (make-instance *group-class*
                      :id id
-                     :src-path (truename stream)
+                     :src-path (when (typep stream 'file-stream)
+                                 (truename stream))
                      :data (make-chunk stream length))
       (+ +size-of-header+ length))))
 
