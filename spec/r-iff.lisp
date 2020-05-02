@@ -316,21 +316,46 @@
 
 ;;;; Arguments and Values:
 
-; stream := stream
+; stream := stream, otherwise signals condition.
+#?(group "Not stream") :signals condition
 
-; end := unsigned-byte
+; end := ignored.
 
-; result 1 := chunk
+; result 1 := group
+#?(flex:with-input-from-sequence (in (concatenate 'vector (babel:string-to-octets "test")
+                                                  #(0 0 0 0)))
+    (group in))
+:be-the group
 
-; result 2 := unsigned-byte
+; result 2 := (integer 4 #xFFFFFFFF)
+#?(flex:with-input-from-sequence (in (concatenate 'vector (babel:string-to-octets "test")
+                                                  #(0 0 0 0)))
+    (nth-value 1 (group in)))
+=> 8
 
 ;;;; Affected By:
+; `*GROUP-CLASS*`
 
 ;;;; Side-Effects:
+; Consume stream.
+#?(flex:with-input-from-sequence (in (concatenate 'vector (babel:string-to-octets "test")
+                                                  #(0 0 0 0)
+                                                  #(1)))
+    (values (group in) (read-byte in)))
+:multiple-value-satisfies
+(lambda (group byte)
+  (& (typep group 'group)
+     (equal "test" (id<-chunk group))
+     (= 8 (r-iff::compute-length group))
+     (eql 1 byte)))
 
 ;;;; Notes:
 
 ;;;; Exceptional-Situations:
+; When stream does not have enough length of bytes, end-of-file is signaled.
+#?(flex:with-input-from-sequence (in (babel:string-to-octets "test"))
+    (group in))
+:signals end-of-file
 
 (requirements-about ID :doc-type type)
 ;;;; Description:
