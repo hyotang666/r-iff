@@ -246,21 +246,46 @@
 
 ;;;; Arguments and Values:
 
-; stream := stream
+; stream := stream, otherwise condition.
+#?(node "Not stream") :signals condition
 
-; end := unsigned-byte
+; end := (integer 4 #xFFFFFFFF), otherwise condition.
+#?(node *standard-input* "Not integer") :signals condition
+#?(node *standard-input* -1) :signals condition
+#?(node *standard-input* (1+ #xFFFFFFFF)) :signals condition
 
-; result 1 := chunk
+; result 1 := node
+#?(flex:with-input-from-sequence (in (babel:string-to-octets "test"))
+    (node in 4))
+:be-the node
 
-; result 2 := unsigned-byte
+; result 2 := (integer 4 #xFFFFFFFF), represents total length of the node.
+#?(flex:with-input-from-sequence (in (babel:string-to-octets "test"))
+    (nth-value 1 (node in 4)))
+=> 4
 
 ;;;; Affected By:
+; `*NODE-CLASS*`
 
 ;;;; Side-Effects:
+; Consume stream.
+#?(flex:with-input-from-sequence (in (concatenate 'vector
+                                                  (babel:string-to-octets "test")
+                                                  #(0)))
+    (values (node in 4) (read-byte in)))
+:multiple-value-satisfies
+(lambda (node byte)
+  (& (typep node 'node)
+     (equal "test" (id<-chunk node))
+     (eql 0 byte)))
 
 ;;;; Notes:
 
 ;;;; Exceptional-Situations:
+; When stream less than 4 bytes, end-of-file is signaled.
+#?(flex:with-input-from-sequence (in (babel:string-to-octets "tes"))
+    (node in 4))
+:signals end-of-file
 
 (requirements-about GROUP :doc-type TYPE)
 
