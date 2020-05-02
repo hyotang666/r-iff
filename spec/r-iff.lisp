@@ -104,7 +104,7 @@
 ; ID [Type] ID
 ; [ACCESSOR] id<-chunk
 
-; SRC-PATH [Type] (OR STRING PATHNAME)
+; SRC-PATH [Type] (OR STRING PATHNAME NULL)
 ; [READER] src-path<-chunk
 
 ; DATA [Type] T
