@@ -315,34 +315,30 @@
          (+ +size-of-header+ (compute-length data))
          +size-of-header+))))
 
-(defun write-length (chunk stream)
-  (etypecase chunk
-    ((or leaf group)
-     (funcall *length-writer* (- (compute-length chunk) +size-of-header+)
-              stream))
-    (node #|Do nothing|#)))
-
-(defun write-chunk (chunk stream)
-  ;; ID
-  (write-sequence (babel:string-to-octets (id<-chunk chunk)) stream)
-  ;; LENGTH
-  (write-length chunk stream)
-  ;; CONTENT
-  (etypecase chunk
-    (leaf
-     (let ((length 0))
-       (dolist (vector (data<-chunk chunk))
-         (incf length (length vector))
-         (write-sequence vector stream))
-       (when (oddp length) ; pad-needed-p
-         (write-byte 0 stream)))) ; > "Pad bytes are to be written as zeros"
-    (node (dolist (chunk (data<-chunk chunk)) (write-chunk chunk stream)))
-    (group
-     (let ((data (data<-chunk chunk)))
-       (when data
-         (write-chunk data stream)))))
-  ;; RETURN-VALUE
-  chunk)
+(defgeneric write-chunk
+    (chunk stream)
+  (:method :around ((chunk chunk) stream)
+   (write-sequence (babel:string-to-octets (id<-chunk chunk)) stream)
+   (call-next-method))
+  (:method :before ((chunk leaf) stream)
+   (funcall *length-writer* (- (compute-length chunk) +size-of-header+) stream))
+  (:method :before ((chunk group) stream)
+   (funcall *length-writer* (- (compute-length chunk) +size-of-header+) stream))
+  (:method ((chunk leaf) stream)
+   (let ((length 0))
+     (dolist (vector (data<-chunk chunk))
+       (incf length (length vector))
+       (write-sequence vector stream))
+     (when (oddp length)
+       (write-byte 0 stream)))
+   chunk)
+  (:method ((chunk node) stream)
+   (dolist (chunk (data<-chunk chunk)) (write-chunk chunk stream)) chunk)
+  (:method ((chunk group) stream)
+   (let ((data (data<-chunk chunk)))
+     (when data
+       (write-chunk data stream)))
+   chunk))
 
 ;;;; DEFPARSER
 #| SYNTAX
