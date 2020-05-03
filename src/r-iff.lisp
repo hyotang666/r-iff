@@ -301,16 +301,19 @@
              (warn "~S is unknown ID" id))
            (funcall parser stream end))))))
 
-(defun compute-length (chunk)
-  "Compute total size of CHUNK, every header length and padding are included."
-  (etypecase chunk
-    (null 0)
-    (leaf (+ +size-of-header+ (reduce #'+ (data<-chunk chunk) :key #'length)))
-    (node
-     (+ +size-of-id+
-        (reduce #'+ (data<-chunk chunk)
-                :key (lambda (elt) (ensure-even (compute-length elt))))))
-    (group (+ +size-of-header+ (compute-length (data<-chunk chunk))))))
+(defgeneric compute-length
+    (chunk)
+  (:method ((chunk leaf))
+   (+ +size-of-header+ (reduce #'+ (data<-chunk chunk) :key #'length)))
+  (:method ((chunk node))
+   (+ +size-of-header+
+      (reduce #'+ (data<-chunk chunk)
+              :key (lambda (elt) (ensure-even (data<-chunk elt))))))
+  (:method ((chunk group))
+   (let ((data (data<-chunk chunk)))
+     (if data
+         (+ +size-of-header+ (compute-length data))
+         +size-of-header+))))
 
 (defun write-length (chunk stream)
   (etypecase chunk
