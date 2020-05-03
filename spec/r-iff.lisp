@@ -545,56 +545,6 @@
 
 ;;;; Notes:
 
-(requirements-about MAKE-CHUNK :doc-type function)
-
-;;;; Description:
-; Top level.
-
-#+syntax
-(MAKE-CHUNK stream &optional end) ; => result
-
-;;;; Arguments and Values:
-
-; stream := 
-
-; end := 
-
-; result := 
-
-;;;; Affected By:
-
-;;;; Side-Effects:
-
-;;;; Notes:
-
-;;;; Exceptional-Situations:
-
-(requirements-about MAKE-CHUNKS :doc-type function)
-
-;;;; Description:
-; make-chunk recursively.
-
-#+syntax
-(MAKE-CHUNKS stream end &optional acc) ; => result
-
-;;;; Arguments and Values:
-
-; stream := 
-
-; end := 
-
-; acc := 
-
-; result := 
-
-;;;; Affected By:
-
-;;;; Side-Effects:
-
-;;;; Notes:
-
-;;;; Exceptional-Situations:
-
 (requirements-about WRITE-CHUNK :doc-type function)
 
 ;;;; Description:
