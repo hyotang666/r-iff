@@ -548,9 +548,29 @@
 (requirements-about WRITE-CHUNK :doc-type function)
 
 ;;;; Description:
+; Write chunk to stream.
+; You must implement this and COMPUTE-LENGTH when you define subclass of
+; leaf, node or group to override data storing.
 
 #+syntax
 (WRITE-CHUNK chunk stream) ; => result
+
+;;;; Argument Precedence Order:
+; chunk stream
+
+;;;; Method signature:
+
+#+signature (WRITE-CHUNK :AROUND (CHUNK CHUNK) (STREAM T))
+; Write ID to stream.
+
+#+signature (WRITE-CHUNK :BEFORE (CHUNK LEAF) (STREAM T))
+#+signature (WRITE-CHUNK :BEFORE (CHUNK GROUP) (STREAM T))
+; Write SIZE to stream.
+
+#+signature (WRITE-CHUNK (CHUNK LEAF) (STREAM T))
+#+signature (WRITE-CHUNK (CHUNK NODE) (STREAM T))
+#+signature (WRITE-CHUNK (CHUNK GROUP) (STREAM T))
+; Write actual byte data to stream.
 
 ;;;; Arguments and Values:
 
@@ -797,3 +817,4 @@
 #?(flex:with-input-from-sequence (in #(1 2 3))
     (read-length in))
 :signals end-of-file
+
