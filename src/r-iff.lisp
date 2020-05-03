@@ -305,12 +305,11 @@
   "Compute total size of CHUNK, every header length and padding are included."
   (etypecase chunk
     (null 0)
-    (leaf
-     (+ +size-of-header+
-        (reduce #'+ (data<-chunk chunk) :key #'length)))
+    (leaf (+ +size-of-header+ (reduce #'+ (data<-chunk chunk) :key #'length)))
     (node
-     (+ +size-of-id+ (reduce #'+ (data<-chunk chunk) :key (lambda (elt)
-                                                            (ensure-even (compute-length elt))))))
+     (+ +size-of-id+
+        (reduce #'+ (data<-chunk chunk)
+                :key (lambda (elt) (ensure-even (compute-length elt))))))
     (group (+ +size-of-header+ (compute-length (data<-chunk chunk))))))
 
 (defun write-length (chunk stream)
@@ -333,7 +332,7 @@
          (incf length (length vector))
          (write-sequence vector stream))
        (when (oddp length) ; pad-needed-p
-         (write-byte 0 stream))))
+         (write-byte 0 stream)))) ; > "Pad bytes are to be written as zeros"
     (node (dolist (chunk (data<-chunk chunk)) (write-chunk chunk stream)))
     (group
      (let ((data (data<-chunk chunk)))
