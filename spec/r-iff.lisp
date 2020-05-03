@@ -4,17 +4,17 @@
 (in-package :r-iff.spec)
 (setup :r-iff)
 
-(requirements-about IFF :doc-type function)
+(common-requirements-about (IFF RIFF) :as op :doc-type function)
 
 ;;;; Description:
 
 #+syntax
-(IFF pathname) ; => result
+(op pathname) ; => result
 
 ;;;; Arguments and Values:
 
 ; pathname := pathname-designator, otherwise signals conditioin.
-#?(iff '#:not-pathname-designator) :signals condition
+#?(op '#:not-pathname-designator) :signals condition
 
 ; result := chunk
 
@@ -56,27 +56,6 @@
 
 ;;;; Side-Effects:
 ; Output to stream.
-
-;;;; Notes:
-
-;;;; Exceptional-Situations:
-
-(requirements-about RIFF :doc-type function)
-
-;;;; Description:
-
-#+syntax
-(RIFF pathname) ; => result
-
-;;;; Arguments and Values:
-
-; pathname := 
-
-; result := 
-
-;;;; Affected By:
-
-;;;; Side-Effects:
 
 ;;;; Notes:
 
