@@ -480,9 +480,12 @@
 (requirements-about *LEAF-CLASS* :doc-type variable)
 
 ;;;; Description:
+; To control actual class which the parser `LEAF` constructs.
 
-;;;; Value type is SYMBOL
-;#? *LEAF-CLASS* :be-the ???
+;;;; Value type is class-name which direct class of LEAF.
+#?*LEAF-CLASS* :satisfies (lambda (name)
+                            (& (find-class name)
+                               (subtypep name 'leaf)))
 
 ; Initial value is `LEAF`
 
