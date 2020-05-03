@@ -382,7 +382,9 @@
 
 ;;; EXPORT
 
-(defun write-iff (iff stream) (write-chunk iff stream))
+(defun write-iff (iff stream)
+  (let ((*length-writer* 'nibbles:write-ub32/be))
+    (write-chunk iff stream)))
 
 ;;;; RIFF
 ;;; IMPORT
