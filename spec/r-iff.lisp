@@ -243,6 +243,9 @@
 
 ; DATA [Type] LIST
 
+;;;; Description:
+; Every element is GROUP or LEAF.
+
 ; ID [Type] ID
 ; [ACCESSOR] id<-chunk
 
