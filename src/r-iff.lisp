@@ -208,9 +208,6 @@
        :initform (error "ID is required")
        :type id
        :accessor id<-chunk)
-   (src-path :initarg :src-path
-             :type (or string pathname null)
-             :reader src-path<-chunk)
    (data :initarg :data :accessor data<-chunk))
   (:documentation "Abstract superclass of group, node, and leaf."))
 
@@ -276,8 +273,6 @@
     (values
       (make-instance *group-class*
                      :id id
-                     :src-path (when (typep stream 'file-stream)
-                                 (truename stream))
                      :data (unless (zerop length)
                              (node stream length)))
       (+ +size-of-header+ length))))
