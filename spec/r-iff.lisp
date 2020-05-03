@@ -465,9 +465,11 @@
 (requirements-about *READ-DATA-ELEMENT-TYPE* :doc-type variable)
 
 ;;;; Description:
+; Control behavior of READ-DATA.
 
-;;;; Value type is CONS
-;#? *READ-DATA-ELEMENT-TYPE* :be-the ???
+;;;; Value type is type-specifier.
+; Expects one of (unsigned-byte 8), (signed-byte 8) or character.
+; Otherwise unspecified.
 
 ; Initial value is `(UNSIGNED-BYTE 8)`
 
