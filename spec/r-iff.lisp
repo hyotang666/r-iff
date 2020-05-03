@@ -33,7 +33,7 @@
 ;;;; Exceptional-Situations:
 ; If file does not have enough length, end-of-file is signaled.
 
-(requirements-about WRITE-IFF :doc-type function)
+(common-requirements-about (WRITE-IFF WRITE-RIFF) :as op :doc-type function)
 
 ;;;; Description:
 
@@ -43,13 +43,13 @@
 ;;;; Arguments and Values:
 
 ; iff := chunk, otherwise signals condition.
-#?(write-iff "Not chunk" *standard-output*) :signals condition
+#?(op "Not chunk" *standard-output*) :signals condition
 
 ; stream := Stream, otherwise signals condition.
-#?(write-iff (make-instance 'group :id "tree") "Not stream") :signals condition
+#?(op (make-instance 'group :id "tree") "Not stream") :signals condition
 
 ; result := iff
-#?(write-iff (make-instance 'group :id "test" :data nil) (make-broadcast-stream))
+#?(op (make-instance 'group :id "test" :data nil) (make-broadcast-stream))
 :be-the chunk
 
 ;;;; Affected By:
@@ -61,28 +61,31 @@
 
 ;;;; Exceptional-Situations:
 
+(requirements-about WRITE-IFF :doc-type function)
+
+; Output size is stored as big endian.
+#?(flex:with-output-to-sequence (out)
+    (write-iff (make-instance 'group
+                              :id "test"
+                              :data (make-instance 'node :id "node" :data nil))
+               out))
+=> #(116 101 115 116
+     0 0 0 8 ; <--- big endian.
+     110 111 100 101)
+,:test equalp
+
 (requirements-about WRITE-RIFF :doc-type function)
 
-;;;; Description:
-
-#+syntax
-(WRITE-RIFF riff stream) ; => result
-
-;;;; Arguments and Values:
-
-; riff := 
-
-; stream := 
-
-; result := 
-
-;;;; Affected By:
-
-;;;; Side-Effects:
-
-;;;; Notes:
-
-;;;; Exceptional-Situations:
+; Output size is stored as little endian.
+#?(flex:with-output-to-sequence (out)
+    (write-riff (make-instance 'group
+                              :id "test"
+                              :data (make-instance 'node :id "node" :data nil))
+               out))
+=> #(116 101 115 116
+     8 0 0 0 ; <--- little endian.
+     110 111 100 101)
+,:test equalp
 
 (requirements-about CHUNK :doc-type TYPE)
 
