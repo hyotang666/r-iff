@@ -438,23 +438,27 @@
 (requirements-about DEFPARSER :doc-type function)
 
 ;;;; Description:
+; Define specific parser for ID.
 
 #+syntax
 (DEFPARSER name parser) ; => result
 
 ;;;; Arguments and Values:
 
-; name := 
+; name := id
 
-; parser := 
+; parser := function designator as (function (stream &optional (integer 4 #xFFFFFFFF)) (values chunk (integer 4 #xFFFFFFFF) &optional))
 
-; result := 
+; result := id
 
 ;;;; Affected By:
+; `*IFF-PARSERS*`.
 
 ;;;; Side-Effects:
+; Modify `*IFF-PARSERS*`.  
 
 ;;;; Notes:
+; See function `LEAF`, `NODE` and `GROUP`.
 
 ;;;; Exceptional-Situations:
 
