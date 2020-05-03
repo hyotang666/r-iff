@@ -512,9 +512,12 @@
 (requirements-about *GROUP-CLASS* :doc-type variable)
 
 ;;;; Description:
+; To control actual class which the parser `GROUP` constructs.
 
 ;;;; Value type is SYMBOL
-;#? *GROUP-CLASS* :be-the ???
+#? *GROUP-CLASS* :satisfies (lambda (name)
+                             (& (find-class name)
+                                (subtypep name 'group)))
 
 ; Initial value is `GROUP`
 
