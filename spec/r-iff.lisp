@@ -818,3 +818,38 @@
     (read-length in))
 :signals end-of-file
 
+(requirements-about COMPUTE-LENGTH :doc-type function)
+
+;;;; Description:
+; Return total length of the CHUNK, including header and padding.
+; NOTE: LEAF itself is not respond to include padding or not.
+; i.e. when chunk is subclass of LEAF, odd integer may returned.
+
+; You must implement this and WRITE-CHUNK when you define subclass of
+; leaf, node or group to override data storing.
+
+#+syntax
+(COMPUTE-LENGTH chunk) ; => result
+
+;;;; Argument Precedence Order:
+; chunk
+
+;;;; Method signature:
+#+signature (COMPUTE-LENGTH (CHUNK LEAF))
+#+signature (COMPUTE-LENGTH (CHUNK NODE))
+#+signature (COMPUTE-LENGTH (CHUNK GROUP))
+
+;;;; Arguments and Values:
+
+; chunk := chunk
+
+; result := integer
+
+;;;; Affected By:
+
+;;;; Side-Effects:
+
+;;;; Notes:
+
+;;;; Exceptional-Situations:
+
