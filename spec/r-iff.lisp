@@ -311,7 +311,7 @@
 
 ;;;; Effective Slots:
 
-; DATA [Type] NODE
+; DATA [Type] (OR NULL NODE)
 
 ; ID [Type] ID
 ; [ACCESSOR] id<-chunk
