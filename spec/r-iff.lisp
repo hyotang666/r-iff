@@ -13,17 +13,25 @@
 
 ;;;; Arguments and Values:
 
-; pathname := 
+; pathname := pathname-designator, otherwise signals conditioin.
+#?(iff '#:not-pathname-designator) :signals condition
 
-; result := 
+; result := chunk
 
 ;;;; Affected By:
+; `*GROUP-CLASS*`, see `GROUP`.
+; `*NODE-CLASS*`, see `NODE`.
+; `*LEAF-CLASS*`, see `LEAF`.
+; `*DATA-SIZE-LIMIT*`, see `READ-DATA`.
+; `*READ-DATA-ELEMENT-TYPE*`, see `READ-DATA`.
 
 ;;;; Side-Effects:
+; Access file system.
 
 ;;;; Notes:
 
 ;;;; Exceptional-Situations:
+; If file does not have enough length, end-of-file is signaled.
 
 (requirements-about WRITE-IFF :doc-type function)
 
