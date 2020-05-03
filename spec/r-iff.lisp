@@ -496,9 +496,12 @@
 (requirements-about *NODE-CLASS* :doc-type variable)
 
 ;;;; Description:
+; To control actual class which the parser `NODE` constructs.
 
 ;;;; Value type is SYMBOL
-;#? *NODE-CLASS* :be-the ???
+#? *NODE-CLASS* :satisfies (lambda (name)
+                             (& (find-class name)
+                                (subtypep name 'node)))
 
 ; Initial value is `NODE`
 
