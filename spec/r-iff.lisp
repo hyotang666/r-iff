@@ -373,19 +373,7 @@
 ;;;; Description:
 
 ;;;; Compound Type Specifier Kind:
-; TODO: Choose one of below and delete others includes this line.
 ; Specializing.
-; Abbreviating.
-; Combining.
-; Predicating.
-
-;;;; Compound Type Specifier Syntax:
-
-#+syntax
-(id)
-
-;;;; Compound Type Specifier Arguments:
-
 
 (requirements-about ID<-CHUNK :doc-type function)
 
