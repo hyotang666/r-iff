@@ -118,9 +118,6 @@
 ; ID [Type] ID
 ; [ACCESSOR] id<-chunk
 
-; SRC-PATH [Type] (OR STRING PATHNAME)
-; [READER] src-path<-chunk
-
 ;;;; Notes:
 
 (requirements-about LEAF :doc-type function)
@@ -240,9 +237,6 @@
 ; ID [Type] ID
 ; [ACCESSOR] id<-chunk
 
-; SRC-PATH [Type] (OR STRING PATHNAME)
-; [READER] src-path<-chunk
-
 ;;;; Notes:
 
 (requirements-about NODE :doc-type function)
@@ -309,9 +303,6 @@
 
 ; ID [Type] ID
 ; [ACCESSOR] id<-chunk
-
-; SRC-PATH [Type] (OR STRING PATHNAME)
-; [READER] src-path<-chunk
 
 ;;;; Notes:
 
@@ -399,33 +390,6 @@
 
 ;;;; Method signature:
 #+signature(ID<-CHUNK (CHUNK CHUNK))
-
-;;;; Arguments and Values:
-
-; object := 
-
-; result := 
-
-;;;; Affected By:
-
-;;;; Side-Effects:
-
-;;;; Notes:
-
-;;;; Exceptional-Situations:
-
-(requirements-about SRC-PATH<-CHUNK :doc-type function)
-
-;;;; Description:
-
-#+syntax
-(SRC-PATH<-CHUNK sb-pcl::object) ; => result
-
-;;;; Argument Precedence Order:
-; sb-pcl::object
-
-;;;; Method signature:
-#+signature(SRC-PATH<-CHUNK (CHUNK CHUNK))
 
 ;;;; Arguments and Values:
 
