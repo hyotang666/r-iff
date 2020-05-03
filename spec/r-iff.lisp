@@ -115,6 +115,15 @@
 
 ; DATA [Type] LIST
 
+;;;; Description:
+; DATA slot contains list of vectors.
+; Because CLHS says array-total-size-limit is "implementation-dependent, but which is not less than 1024."
+; and chunk max size is #xFFFFFFFF.
+; If you want to store other data types (e.g. just raw vector, string, or other parsed structure.),
+; define class which inherit LEAF, and define method initialize-instance for it.
+; In such case, never forget define method COMPUTE-LENGTH and WRITE-CHUNK.
+; Initialize-instance accepts id, size and stream as its keyword parameter.
+
 ; ID [Type] ID
 ; [ACCESSOR] id<-chunk
 
