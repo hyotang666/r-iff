@@ -528,11 +528,8 @@
 (requirements-about +SIZE-OF-ID+ :doc-type variable)
 
 ;;;; Description:
-
-;;;; Value type is (INTEGER 0 4611686018427387903)
-;#? +SIZE-OF-ID+ :be-the ???
-
-; Initial value is `4`
+; Constant value 4.
+; Represents id size.
 
 ;;;; Affected By:
 
@@ -541,11 +538,8 @@
 (requirements-about +SIZE-OF-HEADER+ :doc-type variable)
 
 ;;;; Description:
-
-;;;; Value type is (INTEGER 0 4611686018427387903)
-;#? +SIZE-OF-HEADER+ :be-the ???
-
-; Initial value is `8`
+; Constant value 8.
+; Represents id and length size.
 
 ;;;; Affected By:
 
