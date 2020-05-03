@@ -277,7 +277,7 @@
                      :src-path (when (typep stream 'file-stream)
                                  (truename stream))
                      :data (unless (zerop length)
-                             (make-chunk stream length)))
+                             (node stream length)))
       (+ +size-of-header+ length))))
 
 (defun make-chunks (stream end &optional acc)
