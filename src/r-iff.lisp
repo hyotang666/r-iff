@@ -375,7 +375,7 @@
 
 (defun iff (pathname)
   (with-open-file (stream pathname :element-type 'nibbles:octet)
-    (let ((id (read-id stream)))
+    (let ((id (read-id stream)) (*length-reader* 'nibbles:read-ub32/be))
       (assert (find id '("FORM" "LIST" "CAT ") :test #'equal))
       (rewind stream +size-of-id+)
       (make-chunk stream))))
