@@ -213,7 +213,7 @@
 
 (defclass leaf (chunk) ((data :type list)))
 
-(defmethod initialize-instance ((o leaf) &key id stream size &allow-other-keys)
+(defmethod initialize-instance ((o leaf) &key id stream size)
   (with-slots ((chunk-id id) (chunk-data data))
       o
     (setf chunk-id id
@@ -250,7 +250,6 @@
     (values
       (make-instance *leaf-class*
                      :id id
-                     :position (file-position stream)
                      :stream stream
                      :size length)
       (+ +size-of-header+ padded-size))))
