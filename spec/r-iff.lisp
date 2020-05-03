@@ -42,15 +42,20 @@
 
 ;;;; Arguments and Values:
 
-; iff := 
+; iff := chunk, otherwise signals condition.
+#?(write-iff "Not chunk" *standard-output*) :signals condition
 
-; stream := 
+; stream := Stream, otherwise signals condition.
+#?(write-iff (make-instance 'group :id "tree") "Not stream") :signals condition
 
-; result := 
+; result := iff
+#?(write-iff (make-instance 'group :id "test" :data nil) (make-broadcast-stream))
+:be-the chunk
 
 ;;;; Affected By:
 
 ;;;; Side-Effects:
+; Output to stream.
 
 ;;;; Notes:
 
