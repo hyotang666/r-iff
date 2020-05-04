@@ -247,12 +247,8 @@
   (let* ((id (read-id stream))
          (length (read-length stream)) ; leaf must have length.
          (padded-size (ensure-even length)))
-    (values
-      (make-instance *leaf-class*
-                     :id id
-                     :stream stream
-                     :size length)
-      (+ +size-of-header+ padded-size))))
+    (values (make-instance *leaf-class* :id id :stream stream :size length)
+            (+ +size-of-header+ padded-size))))
 
 (defun node (stream &optional end)
   "Parser for node chunk."
