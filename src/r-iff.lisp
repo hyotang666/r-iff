@@ -398,11 +398,18 @@
 
 ;;;; HELPER
 
-(defun find-by-id (id chunk)
-  (if (equal id (id<-chunk chunk))
-      chunk
-      (etypecase chunk
-        (group (find-by-id id (data<-chunk chunk)))
-        (node
-         (find-if (lambda (data) (find-by-id id data)) (data<-chunk chunk)))
-        (leaf nil))))
+(defgeneric retrieve
+    (id chunk)
+  (:method ((id string) (chunk leaf))
+   (when (equal id (id<-chunk chunk))
+     (list chunk)))
+  (:method ((id string) (chunk node))
+   (let ((data
+          (mapcan (lambda (chunk) (retrieve id chunk)) (data<-chunk chunk))))
+     (if (equal id (id<-chunk chunk))
+         (cons chunk data)
+         data)))
+  (:method ((id string) (chunk group))
+   (if (equal id (id<-chunk chunk))
+       (cons chunk (retrieve id (data<-chunk chunk)))
+       (retrieve id (data<-chunk chunk)))))
