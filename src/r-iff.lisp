@@ -155,6 +155,8 @@
 
 (defparameter *read-data-element-type* '(unsigned-byte 8))
 
+(defparameter *default-class* nil)
+
 (defparameter *leaf-class* 'leaf)
 
 (defparameter *node-class* 'node)
