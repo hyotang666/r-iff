@@ -157,12 +157,6 @@
 
 (defparameter *default-class* nil)
 
-(defparameter *leaf-class* 'leaf)
-
-(defparameter *node-class* 'node)
-
-(defparameter *group-class* 'group)
-
 ;;;; HELPERS
 
 (defun read-id (stream)
