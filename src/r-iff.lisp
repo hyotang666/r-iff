@@ -29,9 +29,7 @@
            ;; #:group
            ;;;; Special variable to control behavior.
            #:*read-data-element-type*
-           #:*leaf-class*
-           #:*node-class*
-           #:*group-class*
+           #:*default-class*
            ;; Magic numbers
            #:+size-of-id+
            #:+size-of-header+
