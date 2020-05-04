@@ -207,7 +207,7 @@
   ((id :initarg :id
        :initform (error "ID is required")
        :type id
-       :accessor id<-chunk)
+       :reader id<-chunk)
    (data :initarg :data :accessor data<-chunk))
   (:documentation "Abstract superclass of group, node, and leaf."))
 
