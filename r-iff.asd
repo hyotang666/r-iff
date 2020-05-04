@@ -1,8 +1,11 @@
 ; vim: ft=lisp et
 (in-package :asdf)
 (defsystem "r-iff"
+  :author "SATO Shinichi"
+  :description "Customizable Resouse/Interchange File Format reader/writer."
+  :license "MIT"
   :version
-  "4.0.0"
+  "4.0.1"
   :depends-on
   (
    "nibbles" ; Operators for byte.
