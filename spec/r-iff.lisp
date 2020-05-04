@@ -651,29 +651,6 @@
 => #(116 101 115 116 0 0 0 0)
 ,:test equalp
 
-(requirements-about FIND-BY-ID :doc-type function)
-
-;;;; Description:
-
-#+syntax
-(FIND-BY-ID id chunk) ; => result
-
-;;;; Arguments and Values:
-
-; id := 
-
-; chunk := 
-
-; result := 
-
-;;;; Affected By:
-
-;;;; Side-Effects:
-
-;;;; Notes:
-
-;;;; Exceptional-Situations:
-
 (requirements-about ENSURE-EVEN :doc-type function)
 
 ;;;; Description:
