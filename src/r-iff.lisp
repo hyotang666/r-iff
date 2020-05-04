@@ -341,10 +341,17 @@
  |#
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
-  (defmacro defparser (name parser)
+  (defmacro defparser (name parser &key default-class)
     ;; Trivial syntax check.
     (check-type name id)
-    `(progn (setf (gethash ,name *iff-parsers*) ,parser) ,name)))
+    `(progn
+      (setf (gethash ,name *iff-parsers*)
+              ,(if default-class
+                   `(lambda (&rest #0=#:args)
+                      (let ((*default-class* ',default-class))
+                        (apply ,parser #0#)))
+                   parser))
+      ,name)))
 
 (defparser "FORM" #'group)
 
