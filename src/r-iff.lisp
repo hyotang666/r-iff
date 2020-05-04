@@ -18,14 +18,12 @@
            ;; Slots
            #:id
            #:data
-           #:src-path
            ;; Slot accessor.
-           #:id<-chunk ; accessor
-           #:src-path<-chunk ; reader
+           #:id<-chunk ; reader
            #:data<-chunk ; accessor
            ;;; as DSL.
            #:defparser
-           ;; Constructors.
+           ;; Parsers.
            ;; #:leaf
            ;; #:node
            ;; #:group
@@ -37,11 +35,10 @@
            ;; Magic numbers
            #:+size-of-id+
            #:+size-of-header+
-           ;; Helpers
-           #:make-chunk
-           #:make-chunks
+           ;; Helper generic functions.
            #:write-chunk
-           #:find-by-id
+           #:compute-length
+           #:retrieve
            ;; Utilities
            #:ensure-even))
 
