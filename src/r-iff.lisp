@@ -332,12 +332,15 @@
 
 ;;;; DEFPARSER
 #| SYNTAX
- | (defparser name parser)
+ | (defparser name parser &key default-class)
  |
  | name := (vector character 4)
  |
  | parser := (function (stream &optional end) (values chunk end))
  | end := (integer 0 *)
+ |
+ | default-class := symbol which names subclass of chunk.
+ |
  |#
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
