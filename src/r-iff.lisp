@@ -233,7 +233,7 @@
 ;;; iff parsers
 
 (declaim
- (ftype (function (stream &optional (integer 4 #xFFFFFFFF))
+ (ftype (function (stream &optional (or null (integer 4 #xFFFFFFFF)))
          (values chunk (integer 4 #xFFFFFFFF) &optional))
         leaf
         node
