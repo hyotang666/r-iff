@@ -19,9 +19,7 @@
 ; result := chunk
 
 ;;;; Affected By:
-; `*GROUP-CLASS*`, see `GROUP`.
-; `*NODE-CLASS*`, see `NODE`.
-; `*LEAF-CLASS*`, see `LEAF`.
+; `*DEFAULT-CLASS*`, see `LEAF`, `NODE`, `GROUP`.
 ; `*DATA-SIZE-LIMIT*`, see `READ-DATA`.
 ; `*READ-DATA-ELEMENT-TYPE*`, see `READ-DATA`.
 
@@ -171,7 +169,7 @@
 => 8
 
 ;;;; Affected By:
-; `*LEAF-CLASS*`
+; `*DEFAULT-CLASS*`
 
 ; `R-IFF::*DATA-SIZE-LIMIT*`
 #?(flex:with-input-from-sequence (in (concatenate 'vector
@@ -280,7 +278,7 @@
 => 4
 
 ;;;; Affected By:
-; `*NODE-CLASS*`
+; `*DEFAULT-CLASS*`
 
 ;;;; Side-Effects:
 ; Consume stream.
@@ -346,7 +344,7 @@
 => 8
 
 ;;;; Affected By:
-; `*GROUP-CLASS*`
+; `*DEFAULT-CLASS*`
 
 ;;;; Side-Effects:
 ; Consume stream.
@@ -472,54 +470,6 @@
 ; Otherwise unspecified.
 
 ; Initial value is `(UNSIGNED-BYTE 8)`
-
-;;;; Affected By:
-
-;;;; Notes:
-
-(requirements-about *LEAF-CLASS* :doc-type variable)
-
-;;;; Description:
-; To control actual class which the parser `LEAF` constructs.
-
-;;;; Value type is class-name which direct class of LEAF.
-#?*LEAF-CLASS* :satisfies (lambda (name)
-                            (& (find-class name)
-                               (subtypep name 'leaf)))
-
-; Initial value is `LEAF`
-
-;;;; Affected By:
-
-;;;; Notes:
-
-(requirements-about *NODE-CLASS* :doc-type variable)
-
-;;;; Description:
-; To control actual class which the parser `NODE` constructs.
-
-;;;; Value type is SYMBOL
-#? *NODE-CLASS* :satisfies (lambda (name)
-                             (& (find-class name)
-                                (subtypep name 'node)))
-
-; Initial value is `NODE`
-
-;;;; Affected By:
-
-;;;; Notes:
-
-(requirements-about *GROUP-CLASS* :doc-type variable)
-
-;;;; Description:
-; To control actual class which the parser `GROUP` constructs.
-
-;;;; Value type is SYMBOL
-#? *GROUP-CLASS* :satisfies (lambda (name)
-                             (& (find-class name)
-                                (subtypep name 'group)))
-
-; Initial value is `GROUP`
 
 ;;;; Affected By:
 
