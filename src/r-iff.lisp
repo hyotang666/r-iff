@@ -159,10 +159,14 @@
 
 ;;;; HELPERS
 
+(defun read-vector (stream size &key (element-type '(unsigned-byte 8)))
+  (let ((vector (make-array (list size) :element-type element-type)))
+    (assert (= (read-sequence vector stream) size) ()
+      'end-of-file :stream stream)
+    vector))
+
 (defun read-string (stream size)
-  (let ((it (nibbles:make-octet-vector size)))
-    (assert (= (read-sequence it stream) size) () 'end-of-file :stream stream)
-    (babel:octets-to-string it)))
+  (babel:octets-to-string (read-vector stream size)))
 
 (defun read-id (stream) (read-string stream +size-of-id+))
 
