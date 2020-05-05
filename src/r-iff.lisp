@@ -187,12 +187,8 @@
 (defun read-data (stream size)
   (check-type stream stream) ; <--- CCL needs.
   (loop :for length := (min *data-size-limit* size)
-        :for chunk
-             := (make-array (list length)
-                            :element-type *read-data-element-type*)
-        :do (assert (= length (read-sequence chunk stream)) ()
-              'end-of-file :stream stream)
-        :collect chunk
+        :collect (read-vector stream length
+                              :element-type *read-data-element-type*)
         :if (<= size *data-size-limit*)
           :do (loop-finish)
         :else
