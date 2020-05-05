@@ -38,6 +38,7 @@
            #:compute-length
            #:retrieve
            ;; Utilities
+           #:read-vector
            #:read-string
            #:read-data
            #:ensure-even))
