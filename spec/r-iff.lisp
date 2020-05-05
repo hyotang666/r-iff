@@ -1,6 +1,6 @@
 (defpackage :r-iff.spec
   (:use :cl :jingoh :r-iff)
-  (:import-from :r-iff #:read-data #:read-id #:read-length))
+  (:import-from :r-iff #:read-id #:read-length))
 (in-package :r-iff.spec)
 (setup :r-iff)
 

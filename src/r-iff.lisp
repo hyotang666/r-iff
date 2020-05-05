@@ -38,6 +38,8 @@
            #:compute-length
            #:retrieve
            ;; Utilities
+           #:read-string
+           #:read-data
            #:ensure-even))
 
 (in-package :r-iff)
@@ -157,11 +159,12 @@
 
 ;;;; HELPERS
 
-(defun read-id (stream)
-  (let ((it (nibbles:make-octet-vector +size-of-id+)))
-    (assert (= (read-sequence it stream) +size-of-id+) ()
-      'end-of-file :stream stream)
-    (map 'string #'code-char it)))
+(defun read-string (stream size)
+  (let ((it (nibbles:make-octet-vector size)))
+    (assert (= (read-sequence it stream) size) () 'end-of-file :stream stream)
+    (babel:octets-to-string it)))
+
+(defun read-id (stream) (read-string stream +size-of-id+))
 
 (defun parser<-id (thing) (gethash thing *iff-parsers* *default-parser*))
 
