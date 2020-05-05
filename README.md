@@ -1,10 +1,12 @@
-# R-IFF 4.0.3
+# R-IFF 7.0.0
 ## What is this?
 Customizable Resouse/Interchange File Format reader/writer.
 
-* Support IFF and RIFF.
-* Automatically compute chunk size.
-* Customize with CLOS way.
+## Features
+
+* Support IFF and RIFF to read/write.
+* Automatically compute chunk size for easy modifying.
+* Customizable with CLOS way.
 
 ### Alternatives.
 [cl-riff](https://github.com/RobBlackwell/cl-riff)
