@@ -185,11 +185,10 @@
 
 ;;; CLHS say array-total-size-limit is "implementation-dependent, but which is not less than 1024."
 
-(defun read-data (stream size)
+(defun read-data (stream size &key (element-type *read-data-element-type*))
   (check-type stream stream) ; <--- CCL needs.
   (loop :for length := (min *data-size-limit* size)
-        :collect (read-vector stream length
-                              :element-type *read-data-element-type*)
+        :collect (read-vector stream length :element-type element-type)
         :if (<= size *data-size-limit*)
           :do (loop-finish)
         :else
