@@ -627,7 +627,7 @@
 ;;;; Description:
 
 #+syntax
-(READ-DATA stream size) ; => result
+(READ-DATA stream size &key (element-type *read-data-element-type*)) ; => result
 
 ;;;; Arguments and Values:
 
@@ -637,6 +637,14 @@
 ; size := (integer 0 *), otherwise condition
 #?(read-data *standard-input* "Not integer") :signals condition
 #?(read-data *standard-input* -1) :signals condition
+
+; element-type := type-specifier, the default is `(unsigned-byte 8)`.
+#?(flex:with-input-from-sequence (in (babel:string-to-octets "test"))
+    (read-data in 4))
+:satisfies (lambda (result)
+             (& (typep result '(cons vector null))
+                (equal "test" (babel:octets-to-string (car result)))))
+; This must be subtype of '(unsigned-byte 8)` otherwise unspecified.
 
 ; result := (list vector)
 
