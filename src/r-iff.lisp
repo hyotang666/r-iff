@@ -223,6 +223,17 @@
 
 (defclass group (chunk) ((data :type (or null node))))
 
+(defclass text (leaf) ((data :type string)))
+
+(defmethod initialize-instance ((chunk text) &key id stream size)
+  (if (null stream)
+      (call-next-method)
+      (with-slots ((chunk-id id) (chunk-data data))
+          chunk
+        (setf chunk-id id
+              chunk-data (read-string stream size))
+        chunk)))
+
 ;;; print object
 
 (defmethod print-object ((chunk chunk) stream)
@@ -306,7 +317,9 @@
    (let ((data (data<-chunk chunk)))
      (if data
          (+ +size-of-header+ (compute-length data))
-         +size-of-header+))))
+         +size-of-header+)))
+  (:method ((chunk text))
+   (+ +size-of-header+ (babel:string-size-in-octets (data<-chunk chunk)))))
 
 (defgeneric write-chunk
     (chunk stream)
@@ -331,6 +344,12 @@
    (let ((data (data<-chunk chunk)))
      (when data
        (write-chunk data stream)))
+   chunk)
+  (:method ((chunk text) stream)
+   (let ((vector (babel:string-to-octets (data<-chunk chunk))))
+     (write-sequence vector stream)
+     (when (oddp (length vector))
+       (write-byte 0 stream)))
    chunk))
 
 ;;;; DEFPARSER
