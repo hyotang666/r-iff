@@ -390,6 +390,15 @@
 
 (defparser "JJJJ" #'node)
 
+;; http://www-mmsp.ece.mcgill.ca/Documents/AudioFormats/WAVE/Docs/riffmci.pdf
+
+(progn
+ .
+ #.(mapcar (lambda (id) `(defparser ,id #'leaf :default-class text))
+           '("IARL" "IART" "ICMS" "ICMT" "ICOP" "ICRD" "ICRP" "IDIM" "IDPI"
+             "IENG" "IGNR" "IKEY" "ILGT" "IMED" "INAM" "IPLT" "IPRD" "ISBJ"
+             "ISFT" "ISHP" "ISRC" "ISRF" "ITCH")))
+
 ;;;; IFF
 ;;; IMPORT
 
