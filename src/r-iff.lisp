@@ -41,7 +41,9 @@
            #:read-vector
            #:read-string
            #:read-data
-           #:ensure-even))
+           #:ensure-even
+           ;;;; Condition
+           #:unknown-id))
 
 (in-package :r-iff)
 
@@ -138,6 +140,13 @@
  |#
 
 ;;;; implementation
+;;;; CONDITION
+
+(define-condition unknown-id (warning) ((id :initarg :id))
+  (:report
+   (lambda (condition stream)
+     (format stream "Unknown chunk ID: ~S" (slot-value condition 'id)))))
+
 ;;;; SPECIALS
 
 (defconstant +size-of-id+ 4)
@@ -302,7 +311,7 @@
          (multiple-value-bind (parser found?)
              (parser<-id id)
            (unless found?
-             (warn "~S is unknown ID" id))
+             (warn 'unknown-id :id id))
            (funcall parser stream end))))))
 
 (defgeneric compute-length
