@@ -241,6 +241,8 @@
           chunk
         (setf chunk-id id
               chunk-data (read-string stream size))
+        (when (oddp size) ; Consume padd.
+          (read-byte stream))
         chunk)))
 
 ;;; print object

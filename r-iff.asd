@@ -5,7 +5,7 @@
   :description "Customizable Resouse/Interchange File Format reader/writer."
   :license "MIT"
   :version
-  "8.0.0"
+  "8.0.1"
   :depends-on
   (
    "nibbles" ; Operators for byte.
